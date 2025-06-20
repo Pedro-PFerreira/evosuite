@@ -38,6 +38,10 @@ public @interface EvoRunnerParameters {
 
     boolean useVNET() default false;
 
+    boolean useAudio() default false;
+
+    boolean useXML() default false;
+
     boolean resetStaticState() default false;
 
     boolean separateClassLoader() default false;

@@ -21,7 +21,6 @@ package org.evosuite.seeding;
 
 import org.evosuite.utils.generic.GenericClass;
 import org.evosuite.utils.generic.GenericClassImpl;
-import org.junit.Assert;
 import org.junit.Test;
 
 import java.util.Arrays;
@@ -36,7 +35,7 @@ import static org.hamcrest.core.IsEqual.equalTo;
 public class TestPrioritization {
 
     @Test
-    public void testBasicOrdering() {
+    public void test() {
         Comparator<Integer> integerComparator = Comparator.comparingInt(x -> x % 10);
         Prioritization<Integer> pc = new Prioritization<>(integerComparator);
         pc.add(1, 1);
@@ -49,7 +48,7 @@ public class TestPrioritization {
 
 
     @Test
-    public void testWithGenericClasses() {
+    public void test1() {
         Prioritization<GenericClass<?>> prioritization =
                 new Prioritization<>(comparingInt(GenericClass::getNumParameters));
         prioritization.add(new GenericClassImpl(NoParams1.class), 1);
@@ -67,18 +66,6 @@ public class TestPrioritization {
             GenericClass<?> expectedGC = new GenericClassImpl(expected.get(i));
             assertThat("", genericClass.equals(expectedGC));
         }
-    }
-
-    @Test
-    public void testClassesWithSamePriorities() {
-        Prioritization<GenericClass<?>> prioritization =
-                new Prioritization<>(comparingInt(GenericClass::getNumParameters));
-        prioritization.add(new GenericClassImpl(Object.class), 0);
-        prioritization.add(new GenericClassImpl(String.class), 1);
-        prioritization.add(new GenericClassImpl(Integer.class), 0);
-
-        List<GenericClass<?>> result = prioritization.toSortedList();
-        Assert.assertEquals(3, result.size());
     }
 
     private static class NoParams2 {

@@ -60,6 +60,16 @@ public class RuntimeSettings {
     public static boolean useVFS = false;
 
     /**
+     * Shall the test cases use a virtual audio system?
+     */
+    public static boolean useAudio= false;
+
+    /**
+     * Shall the test cases use virtual xml documents?
+     */
+    public static boolean useXML = false;
+
+    /**
      * Shall the test cases use a virtual network?
      */
     public static boolean useVNET = false;
@@ -116,7 +126,7 @@ public class RuntimeSettings {
     public static boolean isRunningASystemTest = false;
 
     public static boolean isUsingAnyMocking() {
-        return mockJVMNonDeterminism || useVFS || useVNET || mockGUI;
+        return mockJVMNonDeterminism || useVFS || useVNET || mockGUI || useAudio || useXML;
     }
 
     public static void deactivateAllMocking() {
@@ -124,6 +134,8 @@ public class RuntimeSettings {
         mockGUI = false;
         useVNET = false;
         useVFS = false;
+        useAudio = false;
+        useXML = false;
         assert !isUsingAnyMocking();
     }
 
@@ -132,6 +144,8 @@ public class RuntimeSettings {
         mockGUI = true;
         useVNET = true;
         useVFS = true;
+        useAudio = true;
+        useXML = true;
         assert isUsingAnyMocking();
     }
 }
