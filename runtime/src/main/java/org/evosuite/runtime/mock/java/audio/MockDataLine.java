@@ -19,7 +19,6 @@
  */
 package org.evosuite.runtime.mock.java.audio;
 
-import net.datafaker.Faker;
 import org.evosuite.runtime.Randomness;
 import org.evosuite.runtime.mock.StaticReplacementMock;
 import org.instancio.Instancio;
@@ -36,13 +35,28 @@ import java.util.List;
  */
 public class MockDataLine implements DataLine, StaticReplacementMock {
 
-    private boolean isOpen = false;
-    private boolean isRunning = false;
-    private boolean isActive = false;
-    private byte[] dataBuffer = MockAudioUtils.generateRandomContent(MockAudioUtils.generateSampleRate(), Randomness.nextInt(1, 2));
+    private boolean isOpen;
+    private boolean isRunning;
+    private boolean isActive;
+    private byte[] dataBuffer;
+
 
     public MockDataLine(){
+
+        this.isOpen = false;
+        this.isRunning = false;
+        this.isActive = true;
+        this.dataBuffer = MockAudioUtils.generateRandomContent(MockAudioUtils.generateSampleRate(), Randomness.nextInt(1, 2));
     }
+
+    static{
+        String seed = System.getenv("SEED_FOR_MOCKS");
+
+        if (seed != null) {
+            Randomness.setSeed(Long.parseLong(seed));
+        }
+    }
+
 
     private final List<LineListener> lineListeners = new ArrayList<>();
 
@@ -74,9 +88,7 @@ public class MockDataLine implements DataLine, StaticReplacementMock {
 
     @Override
     public Control[] getControls() {
-
-        Faker faker = new Faker();
-        int size = faker.number().positive();
+        int size = Randomness.nextInt(1, 10);
         Control[] controls = new Control[size];
 
         Object[] controlsList = Instancio.ofList(MockControl.class).size(size).create().toArray();

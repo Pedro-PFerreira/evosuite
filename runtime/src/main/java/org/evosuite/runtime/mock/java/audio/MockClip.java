@@ -47,7 +47,6 @@ public class MockClip implements Clip, OverrideMock {
     private int framePosition = 0;
     private int loopStart;
     private int loopEnd;
-    private long microsecondPosition = 0L;
 
     public MockClip(){
         this.audioInputStream = new MockAudioInputStream();
@@ -124,7 +123,6 @@ public class MockClip implements Clip, OverrideMock {
         this.isRunning = false;
         this.isLooping = false;
         this.framePosition = 0;
-        this.microsecondPosition = 0L;
         this.loopStart = 0;
         this.loopEnd = (int) audioInputStream.getFrameLength();
         notifyListeners(LineEvent.Type.STOP);
@@ -140,7 +138,6 @@ public class MockClip implements Clip, OverrideMock {
         while (loopCount < count) {
             if (this.framePosition <= loopEnd) {
                 this.framePosition = loopStart;
-                this.microsecondPosition = (long) (loopStart * 1_000_000L / getFormat().getFrameRate());
                 loopCount++;
             }
         }

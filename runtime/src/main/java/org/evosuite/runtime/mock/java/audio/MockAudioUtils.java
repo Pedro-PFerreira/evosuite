@@ -36,11 +36,18 @@ public class MockAudioUtils {
     private MockAudioUtils() {
     }
 
+    static{
+        String seed = System.getenv("SEED_FOR_MOCKS");
+
+        if (seed != null) {
+            Randomness.setSeed(Long.parseLong(seed));
+        }
+    }
+
     /**
      * Generates a random sample rate between 8000 and 44000 Hz.
      */
     public static float generateSampleRate() {
-
         int[] sampleRates = {8000, 11025, 16000, 22050, 32000, 44100};
         int randomIndex = Randomness.nextInt(sampleRates.length);
         return sampleRates[randomIndex];

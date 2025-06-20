@@ -19,7 +19,7 @@
  */
 package org.evosuite.runtime.mock.java.audio;
 
-import net.datafaker.Faker;
+import org.evosuite.runtime.Randomness;
 import org.evosuite.runtime.mock.MockFramework;
 import org.evosuite.runtime.mock.StaticReplacementMock;
 import org.instancio.Instancio;
@@ -36,11 +36,17 @@ import java.net.URL;
  */
 public class MockAudioSystem implements StaticReplacementMock {
 
+    static {
+        String seed = System.getenv("SEED_FOR_MOCKS");
+
+        if (seed != null) {
+            Randomness.setSeed(Long.parseLong(seed));
+        }
+    }
+
     public static Mixer.Info[] getMixerInfo() {
 
-        Faker faker = new Faker();
-
-        int size = faker.number().positive();
+        int size = Randomness.nextInt();
 
         return Instancio.ofList(MockMixerInfo.class).size(size).create().toArray(new MockMixerInfo[size]);
     }
@@ -86,8 +92,10 @@ public class MockAudioSystem implements StaticReplacementMock {
 
         if (info.getLineClass().equals(SourceDataLine.class))
             return new MockSourceDataLine();
+        else if (info.getLineClass().equals(TargetDataLine.class))
+            return new MockTargetDataLine();
         else
-            return info.getLineClass().equals(TargetDataLine.class) ? new MockTargetDataLine() : new MockDataLine();
+            return new MockDataLine();
     }
 
 

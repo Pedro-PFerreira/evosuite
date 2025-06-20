@@ -19,7 +19,7 @@
  */
 package org.evosuite.runtime.mock.java.audio;
 
-import net.datafaker.Faker;
+import org.evosuite.runtime.Randomness;
 import org.evosuite.runtime.mock.StaticReplacementMock;
 import org.instancio.Instancio;
 
@@ -38,6 +38,14 @@ public class MockMixer implements Mixer, StaticReplacementMock {
     private boolean isOpen = false;
     private List<LineListener> lineListeners = new ArrayList<>();
 
+    static {
+        String seed = System.getenv("SEED_FOR_MOCKS");
+
+        if (seed != null) {
+            Randomness.setSeed(Long.parseLong(seed));
+        }
+    }
+
     @Override
     public Info getMixerInfo() {
         return Instancio.create(MockMixerInfo.class);
@@ -45,19 +53,14 @@ public class MockMixer implements Mixer, StaticReplacementMock {
 
     @Override
     public Line.Info[] getSourceLineInfo() {
-
-        Faker faker = new Faker();
-
-        int size = faker.number().positive();
+        int size = Randomness.nextInt();
 
         return Instancio.ofList(MockLineInfo.class).size(size).create().toArray(new MockLineInfo[size]);
     }
 
     @Override
     public Line.Info[] getTargetLineInfo() {
-        Faker faker = new Faker();
-
-        int size = faker.number().positive();
+        int size = Randomness.nextInt();
 
         return Instancio.ofList(MockLineInfo.class).size(size).create().toArray(new MockLineInfo[size]);
     }
@@ -210,9 +213,7 @@ public class MockMixer implements Mixer, StaticReplacementMock {
     @Override
     public Control[] getControls() {
 
-        Faker faker = new Faker();
-        int size = faker.number().positive();
-
+        int size = Randomness.nextInt();
         return Instancio.ofList(MockControl.class).size(size).create().toArray(new MockControl[size]);
     }
 

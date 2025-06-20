@@ -24,7 +24,6 @@ import org.evosuite.runtime.mock.OverrideMock;
 import javax.sound.sampled.AudioFormat;
 import javax.sound.sampled.AudioInputStream;
 import javax.sound.sampled.TargetDataLine;
-import java.io.File;
 import java.io.IOException;
 
 import static org.evosuite.runtime.mock.java.audio.MockAudioUtils.*;
@@ -58,28 +57,6 @@ public class MockAudioInputStream extends AudioInputStream implements OverrideMo
         this.audioData = generateRandomContent(this.sampleRate, this.channels);
     }
 
-//    /**
-//     * Constructor using provided audio data and format.
-//     */
-//    public MockAudioInputStream(byte[] audioData, AudioFormat format, long length) {
-//
-//        super(new ByteArrayInputStream(audioData), format, length);
-//        this.sampleRate = format.getSampleRate();
-//        this.channels = format.getChannels();
-//        this.frameSize = format.getFrameSize();
-//        this.audioData = audioData;
-//    }
-
-//    /**
-//     * Constructor using an input stream.
-//     */
-//    public MockAudioInputStream(InputStream stream, AudioFormat format, long length) {
-//        super(stream, format, length);
-//        this.sampleRate = format.getSampleRate();
-//        this.channels = format.getChannels();
-//        this.frameSize = format.getFrameSize();
-//    }
-
     /**
      * Constructor using a TargetDataLine.
      */
@@ -88,14 +65,6 @@ public class MockAudioInputStream extends AudioInputStream implements OverrideMo
         this.sampleRate = line.getFormat().getSampleRate();
         this.channels = line.getFormat().getChannels();
         this.frameSize = line.getFormat().getFrameSize();
-    }
-
-    public byte[] getAudioData() {
-        return audioData;
-    }
-
-    public void setAudioData(byte[] audioData) {
-        this.audioData = audioData;
     }
 
     @Override
@@ -117,7 +86,6 @@ public class MockAudioInputStream extends AudioInputStream implements OverrideMo
 
     @Override
     public int read(byte[] b, int off, int len) throws IOException {
-
         return super.read(b, off, len);
     }
 

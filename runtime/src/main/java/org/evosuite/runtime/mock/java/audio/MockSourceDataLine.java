@@ -20,11 +20,13 @@
 package org.evosuite.runtime.mock.java.audio;
 
 import net.datafaker.Faker;
+import org.evosuite.runtime.Randomness;
 import org.evosuite.runtime.mock.StaticReplacementMock;
 
 import javax.sound.sampled.*;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Random;
 
 import static org.evosuite.runtime.mock.java.audio.MockAudioUtils.generateRandomContent;
 
@@ -37,13 +39,26 @@ import static org.evosuite.runtime.mock.java.audio.MockAudioUtils.generateRandom
  * @author Pedro-PFerreira
  */
 public class MockSourceDataLine implements SourceDataLine, StaticReplacementMock {
-    private boolean isOpen = false;
-    private boolean isRunning = false;
-    private boolean isActive = false;
+    private boolean isOpen;
+    private boolean isRunning;
+    private boolean isActive;
     private byte[] dataBuffer;
-    private List<LineListener> lineListeners = new ArrayList();
+    private List<LineListener> lineListeners;
+
+    static{
+        String seed = System.getenv("SEED_FOR_MOCKS");
+        if (seed != null) {
+            Randomness.setSeed(Long.parseLong(seed));
+        }
+    }
 
     public MockSourceDataLine() {
+
+        this.isOpen = false;
+        this.isRunning = false;
+        this.isActive = true;
+        this.dataBuffer = MockAudioUtils.generateRandomContent(MockAudioUtils.generateSampleRate(), Randomness.nextInt(1, 2));
+        this.lineListeners = new ArrayList<>();
     }
 
     public void open(AudioFormat audioFormat, int i) throws LineUnavailableException {
@@ -199,7 +214,7 @@ public class MockSourceDataLine implements SourceDataLine, StaticReplacementMock
     }
 
     public Control[] getControls() {
-        Faker faker = new Faker();
+        Faker faker = new Faker(new Random(Randomness.getSeed()));
         int maxNumberOfDecimals = faker.number().numberBetween(1, 3);
         int min = faker.number().negative();
         int max = faker.number().positive();

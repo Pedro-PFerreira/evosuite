@@ -19,8 +19,8 @@
  */
 package org.evosuite.runtime.mock.java.audio;
 
+import org.evosuite.runtime.Randomness;
 import org.evosuite.runtime.mock.OverrideMock;
-import org.instancio.Instancio;
 
 import javax.sound.sampled.Control;
 
@@ -39,8 +39,16 @@ public class MockControl extends Control implements OverrideMock {
         this.value = initialValue;
     }
 
+    static{
+        String seed = System.getenv("SEED_FOR_MOCKS");
+
+        if (seed != null) {
+            Randomness.setSeed(Long.parseLong(seed));
+        }
+    }
+
     public MockControl() {
-        this(new MockType(), Instancio.create(float.class));
+        this(new MockType(), Randomness.nextFloat());
     }
 
     public void setValue(float newValue) {
@@ -57,9 +65,8 @@ public class MockControl extends Control implements OverrideMock {
     }
 
     public static class MockType extends Control.Type {
-
         public MockType() {
-            super(Instancio.create(String.class));
+            super(Randomness.nextString(Randomness.nextInt()));
         }
     }
 }

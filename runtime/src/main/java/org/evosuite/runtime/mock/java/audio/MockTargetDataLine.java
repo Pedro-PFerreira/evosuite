@@ -1,22 +1,34 @@
 package org.evosuite.runtime.mock.java.audio;
 
 import net.datafaker.Faker;
+import org.evosuite.runtime.Randomness;
 import org.evosuite.runtime.mock.StaticReplacementMock;
 
 import javax.sound.sampled.*;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Random;
 
 import static org.evosuite.runtime.mock.java.audio.MockAudioUtils.generateRandomContent;
 
 public class MockTargetDataLine implements TargetDataLine, StaticReplacementMock {
-    private boolean isOpen = false;
-    private boolean isRunning = false;
-    private boolean isActive = false;
+    private boolean isOpen;
+    private boolean isRunning;
+    private boolean isActive;
     private byte[] dataBuffer;
-    private List<LineListener> lineListeners = new ArrayList();
+    private List<LineListener> lineListeners;
 
     public MockTargetDataLine() {
+
+        this.isOpen = false;
+        this.isRunning = false;
+        this.isActive = true;
+        this.dataBuffer = MockAudioUtils.generateRandomContent(MockAudioUtils.generateSampleRate(), Randomness.nextInt(1, 2));
+        this.lineListeners = new ArrayList<>();
+        String seed = System.getenv("SEED_FOR_MOCKS");
+        if (seed != null) {
+            Randomness.setSeed(Long.parseLong(seed));
+        }
     }
 
     public void open(AudioFormat audioFormat, int i) throws LineUnavailableException {
@@ -51,12 +63,10 @@ public class MockTargetDataLine implements TargetDataLine, StaticReplacementMock
     @Override
     public int read(byte[] bytes, int i, int i1) {
 
-        Faker faker = new Faker();
-
         if (this.isOpen && this.isActive){
             if (bytes != null && i >= 0 && i1 > 0 && i + i1 <= bytes.length) {
                 for (int j = 0; j < i1; j++) {
-                    bytes[i + j] = (byte)(faker.number().positive() * 256 - 128);
+                    bytes[i + j] = (byte)(Randomness.nextInt() * 256 - 128);
                 }
                 return bytes.length;
             } else {
@@ -191,7 +201,8 @@ public class MockTargetDataLine implements TargetDataLine, StaticReplacementMock
     }
 
     public Control[] getControls() {
-        Faker faker = new Faker();
+
+        Faker faker = new Faker(new Random(Randomness.getSeed()));
         int maxNumberOfDecimals = faker.number().numberBetween(1, 3);
         int min = faker.number().negative();
         int max = faker.number().positive();
