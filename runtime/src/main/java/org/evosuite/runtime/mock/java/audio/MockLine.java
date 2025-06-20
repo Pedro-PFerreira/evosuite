@@ -20,7 +20,7 @@
 package org.evosuite.runtime.mock.java.audio;
 
 import net.datafaker.Faker;
-import org.evosuite.runtime.mock.OverrideMock;
+import org.evosuite.runtime.mock.StaticReplacementMock;
 import org.instancio.Instancio;
 
 import javax.sound.sampled.Control;
@@ -36,11 +36,11 @@ import java.util.List;
  *
  * @author Pedro-PFerreira
  */
-public class MockLine implements Line, OverrideMock {
+public class MockLine implements Line, StaticReplacementMock {
 
-    private boolean isOpen = false;
+    private static boolean isOpen = false;
 
-    private List<LineListener> lineListeners = new ArrayList<>();
+    private static List<LineListener> lineListeners = new ArrayList<>();
 
     @Override
     public Info getLineInfo() {
@@ -126,5 +126,10 @@ public class MockLine implements Line, OverrideMock {
         }
 
         lineListeners.remove(lineListener);
+    }
+
+    @Override
+    public String getMockedClassName() {
+        return MockLine.class.getName();
     }
 }

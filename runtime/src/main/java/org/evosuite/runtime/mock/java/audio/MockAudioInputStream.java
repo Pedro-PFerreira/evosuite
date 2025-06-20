@@ -19,18 +19,15 @@
  */
 package org.evosuite.runtime.mock.java.audio;
 
-import net.datafaker.Faker;
 import org.evosuite.runtime.mock.OverrideMock;
 
 import javax.sound.sampled.AudioFormat;
 import javax.sound.sampled.AudioInputStream;
 import javax.sound.sampled.TargetDataLine;
-import java.io.ByteArrayInputStream;
+import java.io.File;
 import java.io.IOException;
-import java.io.InputStream;
 
-import static org.evosuite.runtime.mock.java.audio.MockAudioUtils.generateChannels;
-import static org.evosuite.runtime.mock.java.audio.MockAudioUtils.generateSampleRate;
+import static org.evosuite.runtime.mock.java.audio.MockAudioUtils.*;
 
 /**
  * Mock implementation of Java's AudioInputStream for testing purposes.
@@ -42,12 +39,11 @@ import static org.evosuite.runtime.mock.java.audio.MockAudioUtils.generateSample
  */
 public class MockAudioInputStream extends AudioInputStream implements OverrideMock {
 
-    private float sampleRate;
-    private int channels;
+    private final float sampleRate;
+    private final int channels;
     private byte[] audioData;
     private int position = 0;
     private int markPosition = 0;
-    private static final int SAMPLE_SIZE_IN_BITS = 16;
 
     /**
      * Default constructor: Generates random audio properties and mock audio data.
@@ -101,6 +97,12 @@ public class MockAudioInputStream extends AudioInputStream implements OverrideMo
     @Override
     public long getFrameLength() {
         return audioData.length / frameSize;
+    }
+
+
+    @Override
+    public AudioFormat getFormat(){
+        return new MockAudioDataFormat();
     }
 
     @Override
@@ -161,32 +163,4 @@ public class MockAudioInputStream extends AudioInputStream implements OverrideMo
         return super.markSupported();
     }
 
-    /**
-     * Generates random audio content based on given sample rate and channels.
-     */
-    private static byte[] generateRandomContent(float sampleRate, int channels) {
-        Faker faker = new Faker();
-        double duration = faker.number().numberBetween(1, 5);
-        int frameSize = (SAMPLE_SIZE_IN_BITS / 8) * channels;
-        int totalSamples = (int) (sampleRate * duration);
-        int bufferSize = totalSamples * frameSize;
-        byte[] audioData = new byte[bufferSize];
-
-        for (int i = 0; i < totalSamples; i++) {
-            short sample = (short) (Math.sin(2.0 * Math.PI * 440.0 * i / sampleRate) * Short.MAX_VALUE);
-            int index = i * frameSize;
-
-            audioData[index] = (byte) (sample & 0xff);
-            audioData[index + 1] = (byte) ((sample >> 8) & 0xff);
-        }
-
-        return audioData;
-    }
-
-    /**
-     * Generates random audio input stream, based on the random content generated.
-     */
-    public static InputStream generateInputStream(float sampleRate, int channels) {
-        return new ByteArrayInputStream(generateRandomContent(sampleRate, channels));
-    }
 }

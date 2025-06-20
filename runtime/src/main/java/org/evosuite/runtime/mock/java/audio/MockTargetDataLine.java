@@ -1,22 +1,3 @@
-/*
- * Copyright (C) 2010-2018 Gordon Fraser, Andrea Arcuri and EvoSuite
- * contributors
- *
- * This file is part of EvoSuite.
- *
- * EvoSuite is free software: you can redistribute it and/or modify it
- * under the terms of the GNU Lesser General Public License as published
- * by the Free Software Foundation, either version 3.0 of the License, or
- * (at your option) any later version.
- *
- * EvoSuite is distributed in the hope that it will be useful, but
- * WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU
- * Lesser Public License for more details.
- *
- * You should have received a copy of the GNU Lesser General Public
- * License along with EvoSuite. If not, see <http://www.gnu.org/licenses/>.
- */
 package org.evosuite.runtime.mock.java.audio;
 
 import net.datafaker.Faker;
@@ -28,22 +9,14 @@ import java.util.List;
 
 import static org.evosuite.runtime.mock.java.audio.MockAudioUtils.generateRandomContent;
 
-/**
- * Mock implementation of Java's SourceDataLine for testing purposes.
- * This ensures audio data is generated in memory without disk access.
- *
- * <p>All objects are created in memory, and no access to disk is ever done.</p>
- *
- * @author Pedro-PFerreira
- */
-public class MockSourceDataLine implements SourceDataLine, StaticReplacementMock {
+public class MockTargetDataLine implements TargetDataLine, StaticReplacementMock {
     private boolean isOpen = false;
     private boolean isRunning = false;
     private boolean isActive = false;
     private byte[] dataBuffer;
     private List<LineListener> lineListeners = new ArrayList();
 
-    public MockSourceDataLine() {
+    public MockTargetDataLine() {
     }
 
     public void open(AudioFormat audioFormat, int i) throws LineUnavailableException {
@@ -72,6 +45,25 @@ public class MockSourceDataLine implements SourceDataLine, StaticReplacementMock
             this.isOpen = true;
             this.isActive = true;
             this.dataBuffer = generateRandomContent(audioFormat.getSampleRate(), audioFormat.getChannels());
+        }
+    }
+
+    @Override
+    public int read(byte[] bytes, int i, int i1) {
+
+        Faker faker = new Faker();
+
+        if (this.isOpen && this.isActive){
+            if (bytes != null && i >= 0 && i1 > 0 && i + i1 <= bytes.length) {
+                for (int j = 0; j < i1; j++) {
+                    bytes[i + j] = (byte)(faker.number().positive() * 256 - 128);
+                }
+                return bytes.length;
+            } else {
+                throw new IllegalArgumentException("Invalid arguments");
+            }
+        } else {
+            throw new IllegalStateException("Line is not open");
         }
     }
 
@@ -254,8 +246,8 @@ public class MockSourceDataLine implements SourceDataLine, StaticReplacementMock
             this.lineListeners.remove(lineListener);
         }
     }
-
+    @Override
     public String getMockedClassName() {
-        return "javax.sound.sampled.SourceDataLine";
+        return "javax.sound.sampled.TargetDataLine";
     }
 }

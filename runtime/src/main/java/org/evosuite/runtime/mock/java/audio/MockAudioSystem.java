@@ -20,12 +20,12 @@
 package org.evosuite.runtime.mock.java.audio;
 
 import net.datafaker.Faker;
+import org.evosuite.runtime.mock.MockFramework;
 import org.evosuite.runtime.mock.StaticReplacementMock;
 import org.instancio.Instancio;
 
 import javax.sound.sampled.*;
-import java.io.File;
-import java.io.InputStream;
+import java.io.*;
 import java.net.URL;
 
 /**
@@ -71,13 +71,11 @@ public class MockAudioSystem implements StaticReplacementMock {
 
     public static boolean isLineSupported(Line.Info info) {
 
-        if (info == null) {
-            throw new NullPointerException();
+        if (!MockFramework.isEnabled()){
+            return AudioSystem.isLineSupported(info);
         }
 
-        Mixer mixer = Instancio.create(MockMixer.class);
-
-        return mixer.isLineSupported(info);
+        return new MockMixer().isLineSupported(info);
     }
 
     public static Line getLine(Line.Info info) throws LineUnavailableException {
@@ -86,7 +84,14 @@ public class MockAudioSystem implements StaticReplacementMock {
             throw new NullPointerException();
         }
 
-        return Instancio.create(MockLine.class);
+        if (info.getLineClass().equals(SourceDataLine.class)) {
+            return new MockSourceDataLine();
+        }
+        else if (info.getLineClass().equals(TargetDataLine.class)) {
+            return new MockTargetDataLine();
+        }
+        else
+            return new MockLine();
     }
 
 
@@ -110,29 +115,35 @@ public class MockAudioSystem implements StaticReplacementMock {
         return Instancio.create(MockSourceDataLine.class);
     }
 
+    public static AudioInputStream getAudioInputStream(File file) throws UnsupportedAudioFileException, IOException {
 
-    public static AudioInputStream getAudioInputStream(InputStream inputStream) {
+        if (!MockFramework.isEnabled()){
+            return AudioSystem.getAudioInputStream(file);
+        }
+
+        return new MockAudioInputStream();
+    }
+
+    public static AudioInputStream getAudioInputStream(InputStream inputStream) throws UnsupportedAudioFileException, IOException {
         if (inputStream == null) {
             throw new NullPointerException();
         }
-
         return Instancio.create(MockAudioInputStream.class);
     }
 
-    public static AudioInputStream getAudioInputStream(URL url) {
+    public static AudioInputStream getAudioInputStream(URL url) throws UnsupportedAudioFileException, IOException {
         if (url == null) {
             throw new NullPointerException();
         }
-
         return Instancio.create(MockAudioInputStream.class);
     }
 
-    public static AudioInputStream getAudioInputStream(File file){
-        if (file == null) {
-            throw new NullPointerException();
-        }
+    public static AudioInputStream getAudioInputStream(AudioFormat targetFormat, AudioInputStream sourceStream) {
 
-        return Instancio.create(MockAudioInputStream.class);
+        if (!MockFramework.isEnabled())
+            return AudioSystem.getAudioInputStream(targetFormat, sourceStream);
+
+        return new MockAudioInputStream();
     }
 
     @Override

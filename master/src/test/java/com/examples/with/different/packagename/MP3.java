@@ -32,13 +32,13 @@ public class MP3 extends Thread
         this.filename = filename;
         this.start();
     }
-    public void run(AudioInputStream in, SourceDataLine line)
+    public void run()
     {
 
         AudioInputStream din = null;
         try {
             File file = new File(filename);
-            //AudioInputStream in = AudioSystem.getAudioInputStream(file);
+            AudioInputStream in = AudioSystem.getAudioInputStream(file);
             AudioFormat baseFormat = in.getFormat();
             AudioFormat decodedFormat = new AudioFormat(
                     AudioFormat.Encoding.PCM_SIGNED,
@@ -47,7 +47,7 @@ public class MP3 extends Thread
                     false);
             din = AudioSystem.getAudioInputStream(decodedFormat, in);
             DataLine.Info info = new DataLine.Info(SourceDataLine.class, decodedFormat);
-            //SourceDataLine line = (SourceDataLine) AudioSystem.getLine(info);
+            SourceDataLine line = (SourceDataLine) AudioSystem.getLine(info);
             if(line != null) {
 
                 line.open(decodedFormat);

@@ -38,4 +38,39 @@ public class MockFloatControl extends FloatControl implements OverrideMock {
     public void setValue(float value) {
         super.setValue(value);
     }
+
+    @Override
+    public float getValue() {
+        return super.getValue();
+    }
+
+    @Override
+    public float getMinimum() {
+        return super.getMinimum();
+    }
+
+    @Override
+    public float getMaximum() {
+        return super.getMaximum();
+    }
+
+    @Override
+    public float getPrecision() {
+        return super.getPrecision();
+    }
+
+    @Override
+    public int getUpdatePeriod() {
+        return super.getUpdatePeriod();
+    }
+
+    @Override
+    public String getUnits() {
+        return super.getUnits();
+    }
+
+    @Override
+    public void shift(float delta, float value, int updatePeriod) {
+        super.shift(delta, value, updatePeriod);
+    }
 }

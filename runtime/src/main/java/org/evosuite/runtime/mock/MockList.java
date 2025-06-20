@@ -24,15 +24,7 @@ import java.util.List;
 
 import org.evosuite.runtime.RuntimeSettings;
 import org.evosuite.runtime.mock.java.audio.*;
-import org.evosuite.runtime.mock.java.io.MockFile;
-import org.evosuite.runtime.mock.java.io.MockFileInputStream;
-import org.evosuite.runtime.mock.java.io.MockFileOutputStream;
-import org.evosuite.runtime.mock.java.io.MockFileReader;
-import org.evosuite.runtime.mock.java.io.MockFileWriter;
-import org.evosuite.runtime.mock.java.io.MockIOException;
-import org.evosuite.runtime.mock.java.io.MockPrintStream;
-import org.evosuite.runtime.mock.java.io.MockPrintWriter;
-import org.evosuite.runtime.mock.java.io.MockRandomAccessFile;
+import org.evosuite.runtime.mock.java.io.*;
 import org.evosuite.runtime.mock.java.lang.*;
 import org.evosuite.runtime.mock.java.net.*;
 import org.evosuite.runtime.mock.java.security.MockSecureRandom;
@@ -94,9 +86,19 @@ public class MockList {
 		}
 
 		if (RuntimeSettings.useAudio){
+			list.add(MockAudioDataFormat.class);
 			list.add(MockAudioInputStream.class);
+			list.add(MockAudioSystem.class);
+			list.add(MockBooleanControl.class);
 			list.add(MockClip.class);
 			list.add(MockControl.class);
+			list.add(MockFloatControl.class);
+			list.add(MockLine.class);
+			list.add(MockLineInfo.class);
+			list.add(MockMixer.class);
+			list.add(MockMixerInfo.class);
+			list.add(MockSourceDataLine.class);
+			list.add(MockTargetDataLine.class);
 		}
 
 		if (RuntimeSettings.useXML){
