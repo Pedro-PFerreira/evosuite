@@ -36,6 +36,18 @@ import static org.evosuite.runtime.mock.java.audio.MockAudioUtils.generateSample
  * @author Pedro-PFerreira
  */
 public class MockAudioDataFormat extends AudioFormat implements OverrideMock {
+
+    /**
+     * Constructor: Initializes the audio format with specific parameters.
+     *
+     * @param encoding        the encoding of the audio data
+     * @param sampleRate      the sample rate of the audio data
+     * @param sampleSizeInBits the size of each sample in bits
+     * @param channels        the number of channels in the audio data
+     * @param frameSize       the size of each frame in bytes
+     * @param frameRate       the frame rate of the audio data
+     * @param bigEndian       whether the audio data is in big-endian format
+     */
     public MockAudioDataFormat(Encoding encoding, float sampleRate, int sampleSizeInBits, int channels, int frameSize, float frameRate, boolean bigEndian) {
         super(encoding, sampleRate, sampleSizeInBits, channels, frameSize, frameRate, bigEndian);
     }
