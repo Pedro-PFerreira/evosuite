@@ -40,6 +40,9 @@ public class MockAudioDataFormat extends AudioFormat implements OverrideMock {
         super(encoding, sampleRate, sampleSizeInBits, channels, frameSize, frameRate, bigEndian);
     }
 
+    /**
+     * Default constructor: Generates random audio properties.
+     */
     public MockAudioDataFormat(){
         super(generateSampleRate(), 16, generateChannels(), true, false);
     }

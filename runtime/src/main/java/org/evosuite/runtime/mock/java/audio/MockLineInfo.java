@@ -30,6 +30,11 @@ import javax.sound.sampled.Line;
  */
 public class MockLineInfo extends Line.Info implements OverrideMock {
 
+    /**
+     * Default constructor: Initializes the line info with a specific class.
+     *
+     * @param lineClass the class of the line
+     */
     public MockLineInfo(Class<?> lineClass) {
         super(lineClass);
     }

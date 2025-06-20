@@ -30,6 +30,11 @@ import javax.sound.sampled.BooleanControl;
  */
 public class MockBooleanControl extends BooleanControl implements OverrideMock {
 
+    /**
+     * Default constructor: Initializes the control with a specific type.
+     *
+     * @param type the type of the control
+     */
     public MockBooleanControl(Type type) {
         super(type, false);
     }

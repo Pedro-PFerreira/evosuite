@@ -34,11 +34,6 @@ import javax.sound.sampled.Control;
 public class MockControl extends Control implements OverrideMock {
     private float value;
 
-    protected MockControl(Type type, float initialValue) {
-        super(type);
-        this.value = initialValue;
-    }
-
     static{
         String seed = System.getenv("SEED_FOR_MOCKS");
 
@@ -47,14 +42,36 @@ public class MockControl extends Control implements OverrideMock {
         }
     }
 
+    /**
+     * Default constructor: Initializes the control with a random type and a random initial value.
+     */
     public MockControl() {
         this(new MockType(), Randomness.nextFloat());
     }
 
+    /**
+     * Constructor: Initializes the control with a specific type and a random initial value.
+     *
+     * @param type the type of the control
+     */
+    protected MockControl(Type type, float initialValue) {
+        super(type);
+        this.value = initialValue;
+    }
+
+    /**
+     * Sets the value of the control.
+     * @param newValue
+     */
     public void setValue(float newValue) {
         this.value = newValue;
     }
 
+    /**
+     * Gets the value of the control.
+     *
+     * @return the current value of the control
+     */
     public float getValue() {
         return this.value;
     }
@@ -64,6 +81,9 @@ public class MockControl extends Control implements OverrideMock {
         return getType() + " value: " + value;
     }
 
+    /**
+     * Mock implementation of the Type class for Control
+     */
     public static class MockType extends Control.Type {
         public MockType() {
             super(Randomness.nextString(Randomness.nextInt()));

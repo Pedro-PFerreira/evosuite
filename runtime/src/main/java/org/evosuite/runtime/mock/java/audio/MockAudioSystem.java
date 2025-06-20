@@ -43,7 +43,17 @@ public class MockAudioSystem implements StaticReplacementMock {
         }
     }
 
+    /**
+     * Returns an array of Mixer.Info objects representing the available mixers.
+     * If MockFramework is enabled, it generates mock mixers instead of querying the system.
+     *
+     * @return an array of Mixer.Info objects
+     */
     public static Mixer.Info[] getMixerInfo() {
+
+        if (!MockFramework.isEnabled()) {
+            return AudioSystem.getMixerInfo();
+        }
 
         int size = Randomness.nextInt();
 
@@ -56,10 +66,23 @@ public class MockAudioSystem implements StaticReplacementMock {
         return mixerInfo;
     }
 
+    /**
+     * Returns a Mixer instance for the specified Mixer.Info.
+     * If MockFramework is enabled, it returns a mock mixer.
+     *
+     * @param info the Mixer.Info object
+     * @return a Mixer instance
+     * @throws NullPointerException if info is null
+     */
     public static Mixer getMixer(Mixer.Info info) {
         if (info == null) {
             throw new NullPointerException();
         }
+
+        if (!MockFramework.isEnabled()) {
+            return AudioSystem.getMixer(info);
+        }
+
         return new MockMixer();
     }
 

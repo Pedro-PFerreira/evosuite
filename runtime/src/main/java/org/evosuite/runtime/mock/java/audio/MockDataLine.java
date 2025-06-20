@@ -40,6 +40,11 @@ public class MockDataLine implements DataLine, StaticReplacementMock {
     private byte[] dataBuffer;
     private final List<LineListener> lineListeners = new ArrayList<>();
 
+    /**
+     * Default constructor for MockDataLine.
+     * Initializes the line as closed, not running, and active.
+     * Generates a random data buffer for audio content.
+     */
     public MockDataLine(){
 
         this.isOpen = false;

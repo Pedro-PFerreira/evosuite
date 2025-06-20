@@ -47,6 +47,10 @@ public class MockClip implements Clip, OverrideMock {
     private int loopStart;
     private int loopEnd;
 
+    /**
+     * Default constructor: Initializes the clip with a mock audio input stream.
+     * The audio format is randomly generated.
+     */
     public MockClip(){
         this.audioInputStream = new MockAudioInputStream();
         this.audioFormat = audioInputStream.getFormat();
@@ -54,6 +58,11 @@ public class MockClip implements Clip, OverrideMock {
         this.loopEnd = (int) audioInputStream.getFrameLength();
     }
 
+    /**
+     * Constructor that initializes the clip with a specific AudioInputStream.
+     *
+     * @param audioInputStream the AudioInputStream to use
+     */
     public MockClip(AudioInputStream audioInputStream){
         this.audioInputStream = audioInputStream;
         this.audioFormat = audioInputStream.getFormat();
@@ -317,6 +326,11 @@ public class MockClip implements Clip, OverrideMock {
         lineListeners.remove(lineListener);
     }
 
+    /**
+     * Notifies all registered LineListeners of a LineEvent.
+     *
+     * @param eventType the type of the event to notify
+     */
     private void notifyListeners(LineEvent.Type eventType) {
         LineEvent event = new LineEvent(this, eventType, getFramePosition());
         for (LineListener listener : lineListeners) {

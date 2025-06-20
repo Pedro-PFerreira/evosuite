@@ -52,6 +52,11 @@ public class MockSourceDataLine implements SourceDataLine, StaticReplacementMock
         }
     }
 
+    /**
+     * Default constructor for MockSourceDataLine.
+     * Initializes the line as closed, not running, and active.
+     * Generates a random data buffer for audio content.
+     */
     public MockSourceDataLine() {
 
         this.isOpen = false;
@@ -61,6 +66,13 @@ public class MockSourceDataLine implements SourceDataLine, StaticReplacementMock
         this.lineListeners = new ArrayList<>();
     }
 
+    /**
+     * Opens the line with the specified audio format and buffer size.
+     *
+     * @param audioFormat the audio format to use
+     * @param i           the buffer size
+     * @throws LineUnavailableException if the line cannot be opened
+     */
     public void open(AudioFormat audioFormat, int i) throws LineUnavailableException {
 
         if (audioFormat == null) {
@@ -78,6 +90,12 @@ public class MockSourceDataLine implements SourceDataLine, StaticReplacementMock
         }
     }
 
+    /**
+     * Opens the line with the specified audio format.
+     *
+     * @param audioFormat the audio format to use
+     * @throws LineUnavailableException if the line cannot be opened
+     */
     public void open(AudioFormat audioFormat) throws LineUnavailableException {
         if (audioFormat == null) {
             throw new NullPointerException("AudioFormat is null");
@@ -88,8 +106,21 @@ public class MockSourceDataLine implements SourceDataLine, StaticReplacementMock
             this.isActive = true;
             this.dataBuffer = generateRandomContent(audioFormat.getSampleRate(), audioFormat.getChannels());
         }
+
+        for(LineListener lineListener : this.lineListeners) {
+            lineListener.update(new LineEvent(this, LineEvent.Type.OPEN, 0L));
+        }
+
+        this.start();
     }
 
+    /**
+     * Reads audio data into the specified byte array.
+     * @param bytes the byte array to read data into
+     * @param i the starting index in the byte array
+     * @param i1 the number of bytes to read
+     * @return the number of bytes read
+     */
     public int write(byte[] bytes, int i, int i1) {
         if (this.isOpen() && this.isActive) {
             if (bytes != null && i >= 0 && i1 > 0 && i + i1 <= bytes.length) {
@@ -110,6 +141,10 @@ public class MockSourceDataLine implements SourceDataLine, StaticReplacementMock
         }
     }
 
+    /**
+     * Drains the line, clearing the data buffer.
+     * This method should be called when the line is running.
+     */
     public void drain() {
         if (this.isOpen() && this.isActive) {
             if (!this.isRunning) {
@@ -120,6 +155,10 @@ public class MockSourceDataLine implements SourceDataLine, StaticReplacementMock
         }
     }
 
+    /**
+     * Flushes the line, clearing the data buffer.
+     * This method should be called when the line is running.
+     */
     public void flush() {
         if (this.isOpen() && this.isActive) {
             if (!this.isRunning) {
@@ -130,6 +169,10 @@ public class MockSourceDataLine implements SourceDataLine, StaticReplacementMock
         }
     }
 
+    /**
+     * Starts the line, allowing it to process audio data.
+     * This method should be called after the line is opened.
+     */
     public void start() {
         if (this.isOpen() && this.isActive) {
             this.isRunning = true;
@@ -141,6 +184,10 @@ public class MockSourceDataLine implements SourceDataLine, StaticReplacementMock
         }
     }
 
+    /**
+     * Stops the line, halting audio processing.
+     * This method should be called when the line is running.
+     */
     public void stop() {
         if (this.isOpen() && this.isActive) {
             if (!this.isRunning) {
@@ -151,54 +198,118 @@ public class MockSourceDataLine implements SourceDataLine, StaticReplacementMock
         }
     }
 
+    /**
+     * Checks if the line is currently running.
+     *
+     * @return true if the line is running, false otherwise
+     */
     public boolean isRunning() {
         return this.isRunning;
     }
 
+    /**
+     * Checks if the line is currently active.
+     *
+     * @return true if the line is active, false otherwise
+     */
     public boolean isActive() {
         return this.isActive;
     }
 
+    /**
+     * Gets the audio format of the line.
+     *
+     * @return the audio format
+     */
     public AudioFormat getFormat() {
         return new MockAudioDataFormat();
     }
 
+    /**
+     * Gets the size of the data buffer.
+     *
+     * @return the size of the data buffer
+     */
     public int getBufferSize() {
         return this.dataBuffer.length;
     }
 
+    /**
+     * Gets the number of bytes that can be written to the line.
+     *
+     * @return the number of bytes available for writing
+     */
     public int available() {
         return 0;
     }
 
+    /**
+     * Gets the current frame position of the line.
+     *
+     * @return the current frame position
+     */
     public int getFramePosition() {
         return 0;
     }
 
+    /**
+     * Gets the current long frame position of the line.
+     *
+     * @return the current long frame position
+     */
     public long getLongFramePosition() {
         return 0L;
     }
 
+    /**
+     * Gets the current microsecond position of the line.
+     *
+     * @return the current microsecond position
+     */
     public long getMicrosecondPosition() {
         return 0L;
     }
 
+    /**
+     * Gets the current level of the line.
+     * This method is not implemented in this mock.
+     *
+     * @return the current level, always 0.0F
+     */
     public float getLevel() {
         return 0.0F;
     }
 
+    /**
+     * Gets the line information for this SourceDataLine.
+     *
+     * @return the line information
+     */
     public Line.Info getLineInfo() {
         return new MockLineInfo(SourceDataLine.class);
     }
 
+    /**
+     * Opens the line.
+     * This method should be called before starting the line.
+     *
+     * @throws LineUnavailableException if the line cannot be opened
+     */
     public void open() throws LineUnavailableException {
         if (!this.isOpen() && !this.isActive) {
             this.isOpen = true;
         } else {
             throw new LineUnavailableException("Line is already open");
         }
+        this.start();
     }
 
+    /**
+     * Closes the line, stopping any audio processing and releasing resources.
+     * This method should be called when the line is no longer needed.
+     *
+     * @throws IllegalStateException if the line is already closed
+     */
     public void close() {
 
         if (!this.isOpen() && !this.isActive) {
@@ -209,10 +320,21 @@ public class MockSourceDataLine implements SourceDataLine, StaticReplacementMock
         this.isActive = false;
     }
 
+    /**
+     * Checks if the line is currently open.
+     *
+     * @return true if the line is open, false otherwise
+     */
     public boolean isOpen() {
         return this.isOpen;
     }
 
+    /**
+     * Gets the controls available for this SourceDataLine.
+     * This method generates random controls for testing purposes.
+     *
+     * @return an array of Control objects
+     */
     public Control[] getControls() {
         Faker faker = new Faker(new Random(Randomness.getSeed()));
         int maxNumberOfDecimals = faker.number().numberBetween(1, 3);
@@ -228,6 +350,13 @@ public class MockSourceDataLine implements SourceDataLine, StaticReplacementMock
         return controls;
     }
 
+    /**
+     * Checks if a specific control type is supported by this SourceDataLine.
+     *
+     * @param type the control type to check
+     * @return true if the control type is supported, false otherwise
+     * @throws NullPointerException if the type is null
+     */
     public boolean isControlSupported(Control.Type type) {
         if (type == null) {
             throw new NullPointerException();
@@ -236,6 +365,13 @@ public class MockSourceDataLine implements SourceDataLine, StaticReplacementMock
         }
     }
 
+    /**
+     * Gets a specific control by its type.
+     *
+     * @param type the control type to retrieve
+     * @return the Control object if supported, null otherwise
+     * @throws NullPointerException if the type is null
+     */
     public Control getControl(Control.Type type) {
         if (type == null) {
             throw new NullPointerException();
@@ -254,6 +390,12 @@ public class MockSourceDataLine implements SourceDataLine, StaticReplacementMock
         }
     }
 
+    /**
+     * Adds a LineListener to this SourceDataLine.
+     *
+     * @param lineListener the LineListener to add
+     * @throws NullPointerException if the lineListener is null
+     */
     public void addLineListener(LineListener lineListener) {
         if (lineListener == null) {
             throw new NullPointerException("LineListener is null");
@@ -262,6 +404,12 @@ public class MockSourceDataLine implements SourceDataLine, StaticReplacementMock
         }
     }
 
+    /**
+     * Removes a LineListener from this SourceDataLine.
+     *
+     * @param lineListener the LineListener to remove
+     * @throws NullPointerException if the lineListener is null
+     */
     public void removeLineListener(LineListener lineListener) {
         if (lineListener == null) {
             throw new NullPointerException("LineListener is null");
@@ -270,6 +418,11 @@ public class MockSourceDataLine implements SourceDataLine, StaticReplacementMock
         }
     }
 
+    /**
+     * Returns the name of the mocked class.
+     *
+     * @return the name of the mocked class
+     */
     public String getMockedClassName() {
         return "javax.sound.sampled.SourceDataLine";
     }

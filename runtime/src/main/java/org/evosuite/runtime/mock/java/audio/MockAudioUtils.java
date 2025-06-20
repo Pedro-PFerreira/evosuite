@@ -45,16 +45,16 @@ public class MockAudioUtils {
     }
 
     /**
-     * Generates a random sample rate between 8000 and 44000 Hz.
+     * Generates a random sample rate between 8000 and 48000 Hz.
+     * @return a random float representing the sample rate
      */
     public static float generateSampleRate() {
-        int[] sampleRates = {8000, 11025, 16000, 22050, 32000, 44100};
-        int randomIndex = Randomness.nextInt(sampleRates.length);
-        return sampleRates[randomIndex];
+        return (float) Randomness.nextDouble(8000, 48000);
     }
 
     /**
      * Generates a random number of channels (1 or 2), for mono or stereo, respectively.
+     * @return an integer representing the number of channels
      */
     public static int generateChannels() {
         return Randomness.nextInt(1, 2);
@@ -62,6 +62,9 @@ public class MockAudioUtils {
 
     /**
      * Generates random audio content based on given sample rate and channels.
+     * @param sampleRate the sample rate of the audio content
+     * @param channels the number of channels (1 for mono, 2 for stereo)
+     * @return a byte array containing random audio data
      */
     public static byte[] generateRandomContent(float sampleRate, int channels) {
         double duration = Randomness.nextInt(1,5);
@@ -83,6 +86,10 @@ public class MockAudioUtils {
 
     /**
      * Generates random audio input stream, based on the random content generated.
+     * @param sampleRate the sample rate of the audio stream
+     * @param channels the number of channels (1 for mono, 2 for stereo)
+     * @return an InputStream containing random audio data
+     *
      */
     public static InputStream generateInputStream(float sampleRate, int channels) {
         return new ByteArrayInputStream(generateRandomContent(sampleRate, channels));
