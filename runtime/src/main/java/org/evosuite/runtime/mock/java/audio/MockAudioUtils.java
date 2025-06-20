@@ -80,4 +80,5 @@ public class MockAudioUtils {
     public static InputStream generateInputStream(float sampleRate, int channels) {
         return new ByteArrayInputStream(generateRandomContent(sampleRate, channels));
     }
+
 }

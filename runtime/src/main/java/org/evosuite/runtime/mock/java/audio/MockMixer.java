@@ -126,7 +126,7 @@ public class MockMixer implements Mixer, StaticReplacementMock {
         Line.Info lineInfo = this.getLineInfo();
 
         if (lineInfo != null && lineInfo.matches(info)) {
-            return Instancio.create(MockLine.class);
+            return Instancio.create(MockDataLine.class);
         }
 
         return null;
@@ -146,10 +146,10 @@ public class MockMixer implements Mixer, StaticReplacementMock {
     @Override
     public Line[] getSourceLines() {
 
-        Line[] localLines = new MockLine[getSourceLines().length];
+        Line[] localLines = new MockDataLine[getSourceLines().length];
 
         for (int i = 0; i < localLines.length; i++) {
-            localLines[i] = Instancio.create(MockLine.class);
+            localLines[i] = Instancio.create(MockDataLine.class);
         }
 
         return localLines;
@@ -157,10 +157,10 @@ public class MockMixer implements Mixer, StaticReplacementMock {
 
     @Override
     public Line[] getTargetLines() {
-        Line[] localLines = new MockLine[getSourceLines().length];
+        Line[] localLines = new MockDataLine[getSourceLines().length];
 
         for (int i = 0; i < localLines.length; i++) {
-            localLines[i] = Instancio.create(MockLine.class);
+            localLines[i] = Instancio.create(MockDataLine.class);
         }
 
         return localLines;

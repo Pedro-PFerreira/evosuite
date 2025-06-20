@@ -93,7 +93,7 @@ public class MockList {
 			list.add(MockClip.class);
 			list.add(MockControl.class);
 			list.add(MockFloatControl.class);
-			list.add(MockLine.class);
+			list.add(MockDataLine.class);
 			list.add(MockLineInfo.class);
 			list.add(MockMixer.class);
 			list.add(MockMixerInfo.class);

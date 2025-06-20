@@ -84,14 +84,10 @@ public class MockAudioSystem implements StaticReplacementMock {
             throw new NullPointerException();
         }
 
-        if (info.getLineClass().equals(SourceDataLine.class)) {
+        if (info.getLineClass().equals(SourceDataLine.class))
             return new MockSourceDataLine();
-        }
-        else if (info.getLineClass().equals(TargetDataLine.class)) {
-            return new MockTargetDataLine();
-        }
         else
-            return new MockLine();
+            return info.getLineClass().equals(TargetDataLine.class) ? new MockTargetDataLine() : new MockDataLine();
     }
 
 
@@ -103,7 +99,6 @@ public class MockAudioSystem implements StaticReplacementMock {
         if (info == null) {
             throw new NullPointerException();
         }
-
         return Instancio.create(MockClip.class);
     }
 
@@ -111,7 +106,6 @@ public class MockAudioSystem implements StaticReplacementMock {
         if (format == null) {
             throw new NullPointerException();
         }
-
         return Instancio.create(MockSourceDataLine.class);
     }
 
@@ -120,22 +114,19 @@ public class MockAudioSystem implements StaticReplacementMock {
         if (!MockFramework.isEnabled()){
             return AudioSystem.getAudioInputStream(file);
         }
-
         return new MockAudioInputStream();
     }
 
     public static AudioInputStream getAudioInputStream(InputStream inputStream) throws UnsupportedAudioFileException, IOException {
-        if (inputStream == null) {
-            throw new NullPointerException();
-        }
-        return Instancio.create(MockAudioInputStream.class);
+        if (!MockFramework.isEnabled())
+            return AudioSystem.getAudioInputStream(inputStream);
+        return new MockAudioInputStream();
     }
 
     public static AudioInputStream getAudioInputStream(URL url) throws UnsupportedAudioFileException, IOException {
-        if (url == null) {
-            throw new NullPointerException();
-        }
-        return Instancio.create(MockAudioInputStream.class);
+        if (!MockFramework.isEnabled())
+            return AudioSystem.getAudioInputStream(url);
+        return new MockAudioInputStream();
     }
 
     public static AudioInputStream getAudioInputStream(AudioFormat targetFormat, AudioInputStream sourceStream) {

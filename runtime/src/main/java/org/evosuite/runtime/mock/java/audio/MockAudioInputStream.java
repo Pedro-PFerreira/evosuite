@@ -94,6 +94,10 @@ public class MockAudioInputStream extends AudioInputStream implements OverrideMo
         return audioData;
     }
 
+    public void setAudioData(byte[] audioData) {
+        this.audioData = audioData;
+    }
+
     @Override
     public long getFrameLength() {
         return audioData.length / frameSize;

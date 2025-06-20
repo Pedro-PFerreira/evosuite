@@ -41,12 +41,13 @@ public class MockClip implements Clip, OverrideMock {
     private final AudioInputStream audioInputStream;
     private final List<LineListener> lineListeners = new ArrayList<>();
 
-    private boolean open = false;
-    private boolean running = false;
-    private boolean looping = false;
+    private boolean isOpen = false;
+    private boolean isRunning = false;
+    private boolean isLooping = false;
     private int framePosition = 0;
     private int loopStart;
     private int loopEnd;
+    private long microsecondPosition = 0L;
 
     public MockClip(){
         this.audioInputStream = new MockAudioInputStream();
@@ -65,15 +66,15 @@ public class MockClip implements Clip, OverrideMock {
     @Override
     public void open(AudioFormat audioFormat, byte[] bytes, int i, int i1) throws LineUnavailableException {
 
-        if (open) {
+        if (isOpen) {
             throw new LineUnavailableException("Clip is already open");
         }
-        this.open = true;
+        this.isOpen = true;
     }
 
     @Override
     public void open(AudioInputStream audioInputStream) throws LineUnavailableException, IOException {
-        if (open) {
+        if (isOpen) {
             throw new LineUnavailableException("Clip is already open");
         }
 
@@ -89,7 +90,7 @@ public class MockClip implements Clip, OverrideMock {
 
     @Override
     public void open() throws LineUnavailableException {
-        if (open) {
+        if (isOpen) {
             throw new LineUnavailableException("Clip is already open");
         }
 
@@ -106,52 +107,53 @@ public class MockClip implements Clip, OverrideMock {
     @Override
     public void close() {
         stop();
-        open = false;
+        isOpen = false;
         notifyListeners(LineEvent.Type.CLOSE);
     }
 
     @Override
     public void start() {
-        if (!open) {
-            throw new IllegalStateException("Clip is not open");
-        }
-        if (running) {
-            throw new IllegalStateException("Clip is already running");
-        }
-        running = true;
+
+        isRunning = true;
         notifyListeners(LineEvent.Type.START);
     }
 
     @Override
     public void stop() {
 
-        if (!open) {
-            throw new IllegalStateException("Clip is not open");
-        }
-        if (!running) {
-            throw new IllegalStateException("Clip is not running");
-        }
-        this.running = false;
-        this.looping = false;
+        this.isRunning = false;
+        this.isLooping = false;
+        this.framePosition = 0;
+        this.microsecondPosition = 0L;
+        this.loopStart = 0;
+        this.loopEnd = (int) audioInputStream.getFrameLength();
         notifyListeners(LineEvent.Type.STOP);
     }
 
     @Override
     public void loop(int count) {
-        if (!open) { throw new IllegalStateException("Clip is not open"); }
-        this.looping = true;
-        notifyListeners(LineEvent.Type.START);
-        start();
+        if (!this.isOpen) { throw new IllegalStateException("Clip is not open"); }
+        this.isLooping = true;
+
+        int loopCount = 0;
+
+        while (loopCount < count) {
+            if (this.framePosition <= loopEnd) {
+                this.framePosition = loopStart;
+                this.microsecondPosition = (long) (loopStart * 1_000_000L / getFormat().getFrameRate());
+                loopCount++;
+            }
+        }
     }
 
     @Override
     public boolean isRunning() {
-        return running;
+        return isRunning;
     }
 
     @Override
     public boolean isActive() {
-        return running || looping;
+        return isRunning || isLooping;
     }
 
     @Override
@@ -269,7 +271,7 @@ public class MockClip implements Clip, OverrideMock {
 
     @Override
     public boolean isOpen() {
-        return open;
+        return isOpen;
     }
 
     @Override
