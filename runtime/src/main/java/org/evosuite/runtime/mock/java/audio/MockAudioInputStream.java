@@ -19,6 +19,7 @@
  */
 package org.evosuite.runtime.mock.java.audio;
 
+import org.evosuite.runtime.mock.MockFramework;
 import org.evosuite.runtime.mock.OverrideMock;
 
 import javax.sound.sampled.AudioFormat;
@@ -86,7 +87,16 @@ public class MockAudioInputStream extends AudioInputStream implements OverrideMo
 
     @Override
     public int read(byte[] b, int off, int len) throws IOException {
-        return super.read(b, off, len);
+
+        if (!MockFramework.isEnabled()){
+            return super.read(b, off, len);
+        }
+
+        if (position >= audioData.length) return -1;
+        int bytesToRead = Math.min(len, audioData.length - position);
+        System.arraycopy(audioData, position, b, off, bytesToRead);
+        position += bytesToRead;
+        return bytesToRead;
     }
 
     @Override

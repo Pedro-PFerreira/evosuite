@@ -47,6 +47,13 @@ public class MockClip implements Clip, OverrideMock {
     private int loopStart;
     private int loopEnd;
 
+    static{
+        String seed = System.getenv("SEED_FOR_MOCKS");
+        if (seed != null) {
+            Randomness.setSeed(Long.parseLong(seed));
+        }
+    }
+
     /**
      * Default constructor: Initializes the clip with a mock audio input stream.
      * The audio format is randomly generated.
@@ -265,9 +272,7 @@ public class MockClip implements Clip, OverrideMock {
     }
 
     @Override
-    public float getLevel() {
-        return Randomness.nextFloat();
-    }
+    public float getLevel() {return 0.5f;}
 
     @Override
     public Line.Info getLineInfo() {

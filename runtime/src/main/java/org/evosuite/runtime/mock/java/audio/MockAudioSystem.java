@@ -43,6 +43,8 @@ public class MockAudioSystem implements StaticReplacementMock {
         }
     }
 
+    private static final MockClip mockClipInstance = new MockClip();
+
     /**
      * Returns an array of Mixer.Info objects representing the available mixers.
      * If MockFramework is enabled, it generates mock mixers instead of querying the system.
@@ -147,20 +149,22 @@ public class MockAudioSystem implements StaticReplacementMock {
             return new MockSourceDataLine();
         else if (info.getLineClass().equals(TargetDataLine.class))
             return new MockTargetDataLine();
+        else if (info.getLineClass().equals(Clip.class))
+            return mockClipInstance;
         else
             return new MockDataLine();
     }
 
 
     public static Clip getClip() {
-        return new MockClip();
+        return mockClipInstance;
     }
 
     public Clip getClip(Mixer.Info info){
         if (info == null) {
             throw new NullPointerException();
         }
-        return new MockClip();
+        return mockClipInstance;
     }
 
     public static SourceDataLine getSourceDataLine(AudioFormat format) {

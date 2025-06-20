@@ -226,6 +226,7 @@ public class Randomness implements Serializable {
     public static void setSeed(long seed) {
         Randomness.seed = seed;
         random.setSeed(seed);
+        logger.info("Random seed set to: {}", seed);
     }
 
     /**

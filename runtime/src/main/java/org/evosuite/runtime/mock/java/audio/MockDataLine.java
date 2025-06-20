@@ -20,6 +20,7 @@
 package org.evosuite.runtime.mock.java.audio;
 
 import org.evosuite.runtime.Randomness;
+import org.evosuite.runtime.mock.OverrideMock;
 import org.evosuite.runtime.mock.StaticReplacementMock;
 
 import javax.sound.sampled.*;
@@ -63,7 +64,7 @@ public class MockDataLine implements DataLine, StaticReplacementMock {
 
     @Override
     public Info getLineInfo() {
-        return new DataLine.Info(MockDataLine.class, new MockAudioDataFormat());
+        return new DataLine.Info(MockInfo.class, new MockAudioDataFormat());
     }
 
     @Override
@@ -239,4 +240,38 @@ public class MockDataLine implements DataLine, StaticReplacementMock {
         return DataLine.class.getName();
     }
 
+    public static class MockInfo extends DataLine.Info implements OverrideMock {
+
+        public MockInfo(Class<?> lineClass, AudioFormat[] formats, int minBufferSize, int maxBufferSize) {
+            super(lineClass, formats, minBufferSize, maxBufferSize);
+        }
+
+        public MockInfo(Class<?> lineClass, AudioFormat format, int bufferSize) {
+            super(lineClass, format, bufferSize);
+        }
+
+        public MockInfo(Class<? extends Line> lineClass, AudioFormat audioFormat) {
+            super(lineClass, audioFormat);
+        }
+
+        @Override
+        public boolean isFormatSupported(AudioFormat format) {
+            return format instanceof MockAudioDataFormat;
+        }
+
+        @Override
+        public AudioFormat[] getFormats(){
+            return new AudioFormat[] { new MockAudioDataFormat() };
+        }
+
+        @Override
+        public boolean matches(Line.Info info) {
+            return info instanceof MockInfo;
+        }
+
+        @Override
+        public String toString() {
+            return "MockInfo for " + getLineClass().getName();
+        }
+    }
 }

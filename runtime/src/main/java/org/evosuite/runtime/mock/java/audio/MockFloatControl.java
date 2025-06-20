@@ -30,18 +30,6 @@ import javax.sound.sampled.FloatControl;
  * @author Pedro-PFerreira
  */
 public class MockFloatControl extends FloatControl implements OverrideMock {
-
-    /**
-     * Default constructor: Initializes the control with a specific type and a random initial value.
-     * @param type the type of the control
-     * @param minimum the minimum value of the control
-     * @param maximum the maximum value of the control
-     * @param precision the precision of the control
-     * @param updatePeriod the update period of the control
-     * @param initialValue the initial value of the control
-     * @param units the units of the control
-     *
-     */
     public MockFloatControl(Type type, float minimum, float maximum, float precision, int updatePeriod, float initialValue, String units) {
         super(type, minimum, maximum, precision, updatePeriod, initialValue, units);
     }

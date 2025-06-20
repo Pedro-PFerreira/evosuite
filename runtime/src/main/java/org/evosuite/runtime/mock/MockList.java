@@ -94,6 +94,7 @@ public class MockList {
 			list.add(MockControl.class);
 			list.add(MockFloatControl.class);
 			list.add(MockDataLine.class);
+			list.add(MockDataLine.MockInfo.class);
 			list.add(MockLineInfo.class);
 			list.add(MockMixer.class);
 			list.add(MockMixerInfo.class);
