@@ -22,7 +22,6 @@ package org.evosuite.coverage.mutation;
 
 import org.evosuite.Properties;
 import org.evosuite.TestGenerationContext;
-import org.evosuite.coverage.MethodNameMatcher;
 import org.evosuite.instrumentation.mutation.InsertUnaryOperator;
 import org.evosuite.instrumentation.mutation.ReplaceArithmeticOperator;
 import org.evosuite.instrumentation.mutation.ReplaceConstant;
@@ -30,8 +29,6 @@ import org.evosuite.instrumentation.mutation.ReplaceVariable;
 import org.evosuite.rmi.ClientServices;
 import org.evosuite.statistics.RuntimeVariable;
 import org.evosuite.testsuite.AbstractFitnessFactory;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -48,12 +45,6 @@ public class MutationFactory extends AbstractFitnessFactory<MutationTestFitness>
     private boolean strong = true;
 
     protected List<MutationTestFitness> goals = null;
-
-    private static final Logger logger = LoggerFactory.getLogger(MutationFactory.class);
-
-
-    private final MethodNameMatcher matcher = new MethodNameMatcher();
-
 
     /**
      * <p>
@@ -83,17 +74,26 @@ public class MutationFactory extends AbstractFitnessFactory<MutationTestFitness>
      */
     @Override
     public List<MutationTestFitness> getCoverageGoals() {
+        return getCoverageGoals(null);
+    }
+
+    /**
+     * <p>
+     * getCoverageGoals
+     * </p>
+     *
+     * @param targetMethod a {@link java.lang.String} object.
+     * @return a {@link java.util.List} object.
+     */
+    public List<MutationTestFitness> getCoverageGoals(String targetMethod) {
         if (goals != null)
             return goals;
 
         goals = new ArrayList<>();
 
         for (Mutation m : getMutantsLimitedPerClass()) {
-            String methodName = m.getMethodName();
-            if(!matcher.methodMatches(methodName)) {
-                logger.info("Method {} does not match criteria. ", methodName);
+            if (targetMethod != null && !m.getMethodName().endsWith(targetMethod))
                 continue;
-            }
 
             // We need to return all mutants to make coverage values and bitstrings consistent
             //if (MutationTimeoutStoppingCondition.isDisabled(m))

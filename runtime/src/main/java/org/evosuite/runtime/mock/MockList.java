@@ -23,6 +23,9 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.evosuite.runtime.RuntimeSettings;
+import org.evosuite.runtime.mock.java.audio.MockAudioInputStream;
+import org.evosuite.runtime.mock.java.audio.MockClip;
+import org.evosuite.runtime.mock.java.audio.MockControl;
 import org.evosuite.runtime.mock.java.io.MockFile;
 import org.evosuite.runtime.mock.java.io.MockFileInputStream;
 import org.evosuite.runtime.mock.java.io.MockFileOutputStream;
@@ -89,6 +92,12 @@ public class MockList {
 			list.add(MockFileHandler.class);
 			list.add(MockJFileChooser.class); // GUI Stuff?
 			list.add(MockFileSystemView.class);
+		}
+
+		if (RuntimeSettings.useAudio){
+			list.add(MockAudioInputStream.class);
+			list.add(MockClip.class);
+			list.add(MockControl.class);
 		}
 
 		if (RuntimeSettings.mockJVMNonDeterminism) {
@@ -220,7 +229,6 @@ public class MockList {
 		}
 
 		for (Class<? extends EvoSuiteMock> mock : getList()) {
-
 			String name = null;
 
 			if (OverrideMock.class.isAssignableFrom(mock)) {

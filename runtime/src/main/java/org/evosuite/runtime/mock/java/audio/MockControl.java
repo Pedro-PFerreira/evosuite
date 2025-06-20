@@ -17,34 +17,37 @@
  * You should have received a copy of the GNU Lesser General Public
  * License along with EvoSuite. If not, see <http://www.gnu.org/licenses/>.
  */
-package org.evosuite.runtime;
+package org.evosuite.runtime.mock.java.audio;
 
-import java.lang.annotation.Documented;
-import java.lang.annotation.Retention;
-import java.lang.annotation.RetentionPolicy;
+import org.evosuite.runtime.mock.OverrideMock;
+
+import javax.sound.sampled.Control;
 
 /**
- * Annotation needed to pass parameters to EvoRunner
+ * Mock implementation of the Control class
+ * <p>
+ * This class is used to mock the Control class from the javax.sound.sampled package.
  *
- * @author arcuri
+ * @author Pedro-PFerreira
  */
-@Documented
-@Retention(RetentionPolicy.RUNTIME)
-public @interface EvoRunnerParameters {
+public class MockControl extends Control implements OverrideMock {
+    private float value;
 
-    boolean mockJVMNonDeterminism() default false;
+    protected MockControl(Type type, float initialValue) {
+        super(type);
+        this.value = initialValue;
+    }
 
-    boolean useVFS() default false;
+    public void setValue(float newValue) {
+        this.value = newValue;
+    }
 
-    boolean useVNET() default false;
+    public float getValue() {
+        return this.value;
+    }
 
-    boolean useAudio() default false;
-
-    boolean resetStaticState() default false;
-
-    boolean separateClassLoader() default false;
-
-    boolean useJEE() default false;
-
-    boolean mockGUI() default false;
+    @Override
+    public String toString() {
+        return getType() + " value: " + value;
+    }
 }
