@@ -20,46 +20,27 @@
 package org.evosuite.runtime.mock.java.audio;
 
 import org.evosuite.runtime.mock.OverrideMock;
-import org.instancio.Instancio;
 
-import javax.sound.sampled.Control;
+import javax.sound.sampled.AudioFormat;
+
+import static org.evosuite.runtime.mock.java.audio.MockAudioUtils.generateChannels;
+import static org.evosuite.runtime.mock.java.audio.MockAudioUtils.generateSampleRate;
+
 
 /**
- * Mock implementation of the Control class
- * <p>
- * This class is used to mock the Control class from the javax.sound.sampled package.
+ * Mock implementation of Java's AudioDataFormat for testing purposes.
+ * This ensures audio format is generated with more realistic values.
+ *
+ * <p>All objects are created in memory, and no access to disk is ever done.</p>
  *
  * @author Pedro-PFerreira
  */
-public class MockControl extends Control implements OverrideMock {
-    private float value;
-
-    protected MockControl(Type type, float initialValue) {
-        super(type);
-        this.value = initialValue;
+public class MockAudioDataFormat extends AudioFormat implements OverrideMock {
+    public MockAudioDataFormat(Encoding encoding, float sampleRate, int sampleSizeInBits, int channels, int frameSize, float frameRate, boolean bigEndian) {
+        super(encoding, sampleRate, sampleSizeInBits, channels, frameSize, frameRate, bigEndian);
     }
 
-    public MockControl() {
-        this(new MockType(), Instancio.create(float.class));
-    }
-
-    public void setValue(float newValue) {
-        this.value = newValue;
-    }
-
-    public float getValue() {
-        return this.value;
-    }
-
-    @Override
-    public String toString() {
-        return getType() + " value: " + value;
-    }
-
-    public static class MockType extends Control.Type {
-
-        public MockType() {
-            super(Instancio.create(String.class));
-        }
+    public MockAudioDataFormat(){
+        super(generateSampleRate(), 16, generateChannels(), true, false);
     }
 }

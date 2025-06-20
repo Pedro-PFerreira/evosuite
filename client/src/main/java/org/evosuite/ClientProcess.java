@@ -133,6 +133,7 @@ public class ClientProcess {
     private static void setupRuntimeProperties() {
         RuntimeSettings.useVFS = Properties.VIRTUAL_FS;
         RuntimeSettings.useAudio = Properties.VIRTUAL_AUDIO;
+        RuntimeSettings.useXML = Properties.VIRTUAL_XML;
         RuntimeSettings.mockJVMNonDeterminism = Properties.REPLACE_CALLS;
         RuntimeSettings.mockSystemIn = Properties.REPLACE_SYSTEM_IN;
         RuntimeSettings.mockGUI = Properties.REPLACE_GUI;

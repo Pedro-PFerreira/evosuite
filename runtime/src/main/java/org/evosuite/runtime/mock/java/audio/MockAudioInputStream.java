@@ -29,6 +29,9 @@ import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 
+import static org.evosuite.runtime.mock.java.audio.MockAudioUtils.generateChannels;
+import static org.evosuite.runtime.mock.java.audio.MockAudioUtils.generateSampleRate;
+
 /**
  * Mock implementation of Java's AudioInputStream for testing purposes.
  * This ensures audio data is generated in memory without disk access.
@@ -39,9 +42,9 @@ import java.io.InputStream;
  */
 public class MockAudioInputStream extends AudioInputStream implements OverrideMock {
 
-    private final float sampleRate;
-    private final int channels;
-    private final byte[] audioData;
+    private float sampleRate;
+    private int channels;
+    private byte[] audioData;
     private int position = 0;
     private int markPosition = 0;
     private static final int SAMPLE_SIZE_IN_BITS = 16;
@@ -50,33 +53,36 @@ public class MockAudioInputStream extends AudioInputStream implements OverrideMo
      * Default constructor: Generates random audio properties and mock audio data.
      */
     public MockAudioInputStream() {
-        this(generateRandomContent(generateSampleRate(), generateChannels()),
-                new AudioFormat(generateSampleRate(), 16, generateChannels(), true, false),
+        super(generateInputStream(generateSampleRate(), generateChannels()),
+                new MockAudioDataFormat(),
                 0);
-    }
 
-    /**
-     * Constructor using provided audio data and format.
-     */
-    public MockAudioInputStream(byte[] audioData, AudioFormat format, long length) {
-
-        super(new ByteArrayInputStream(audioData), format, length);
-        this.sampleRate = format.getSampleRate();
-        this.channels = format.getChannels();
-        this.frameSize = format.getFrameSize();
-        this.audioData = audioData;
-    }
-
-    /**
-     * Constructor using an input stream.
-     */
-    public MockAudioInputStream(InputStream stream, AudioFormat format, long length) {
-        super(stream, format, length);
-        this.sampleRate = format.getSampleRate();
-        this.channels = format.getChannels();
-        this.frameSize = format.getFrameSize();
+        this.sampleRate = generateSampleRate();
+        this.channels = generateChannels();
         this.audioData = generateRandomContent(this.sampleRate, this.channels);
     }
+
+//    /**
+//     * Constructor using provided audio data and format.
+//     */
+//    public MockAudioInputStream(byte[] audioData, AudioFormat format, long length) {
+//
+//        super(new ByteArrayInputStream(audioData), format, length);
+//        this.sampleRate = format.getSampleRate();
+//        this.channels = format.getChannels();
+//        this.frameSize = format.getFrameSize();
+//        this.audioData = audioData;
+//    }
+
+//    /**
+//     * Constructor using an input stream.
+//     */
+//    public MockAudioInputStream(InputStream stream, AudioFormat format, long length) {
+//        super(stream, format, length);
+//        this.sampleRate = format.getSampleRate();
+//        this.channels = format.getChannels();
+//        this.frameSize = format.getFrameSize();
+//    }
 
     /**
      * Constructor using a TargetDataLine.
@@ -86,7 +92,6 @@ public class MockAudioInputStream extends AudioInputStream implements OverrideMo
         this.sampleRate = line.getFormat().getSampleRate();
         this.channels = line.getFormat().getChannels();
         this.frameSize = line.getFormat().getFrameSize();
-        this.audioData = generateRandomContent(this.sampleRate, this.channels); // No internal buffer
     }
 
     public byte[] getAudioData() {
@@ -100,19 +105,14 @@ public class MockAudioInputStream extends AudioInputStream implements OverrideMo
 
     @Override
     public int read() throws IOException {
-        if (position >= audioData.length) return -1; // End of stream
-        return audioData[position++] & 0xFF; // Ensure signed byte return
+        if (position >= audioData.length) return -1;
+        return audioData[position++] & 0xFF;
     }
 
     @Override
     public int read(byte[] b, int off, int len) throws IOException {
-        if (position >= audioData.length) return -1;
 
-        int bytesRead = Math.min(len, audioData.length - position);
-        System.arraycopy(audioData, position, b, off, bytesRead);
-        position += bytesRead;
-
-        return bytesRead;
+        return super.read(b, off, len);
     }
 
     @Override
@@ -138,37 +138,27 @@ public class MockAudioInputStream extends AudioInputStream implements OverrideMo
     @Override
     public void close() throws IOException {
         super.close();
+        audioData = null;
+        position = 0;
+        markPosition = 0;
     }
 
     @Override
     public void mark(int readLimit) {
+
+        super.mark(readLimit);
         markPosition = position;
     }
 
     @Override
     public void reset() throws IOException {
+        super.reset();
         position = markPosition;
     }
 
     @Override
     public boolean markSupported() {
         return super.markSupported();
-    }
-
-    /**
-     * Generates a random sample rate between 8000 and 44000 Hz.
-     */
-    private static float generateSampleRate() {
-        Faker faker = new Faker();
-        return faker.number().numberBetween(8000, 44000);
-    }
-
-    /**
-     * Generates a random number of channels (1 or 2), for mono or stereo, respectively.
-     */
-    private static int generateChannels() {
-        Faker faker = new Faker();
-        return faker.number().numberBetween(1, 2);
     }
 
     /**
@@ -189,6 +179,14 @@ public class MockAudioInputStream extends AudioInputStream implements OverrideMo
             audioData[index] = (byte) (sample & 0xff);
             audioData[index + 1] = (byte) ((sample >> 8) & 0xff);
         }
+
         return audioData;
+    }
+
+    /**
+     * Generates random audio input stream, based on the random content generated.
+     */
+    public static InputStream generateInputStream(float sampleRate, int channels) {
+        return new ByteArrayInputStream(generateRandomContent(sampleRate, channels));
     }
 }

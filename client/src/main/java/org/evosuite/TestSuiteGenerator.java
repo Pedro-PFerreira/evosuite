@@ -639,7 +639,6 @@ public class TestSuiteGenerator {
         ClientServices.getInstance().getClientNode().publishPermissionStatistics();
 
         writeObjectPool(testSuite);
-
         /*
          * PUTGeneralizer generalizer = new PUTGeneralizer(); for (TestCase test
          * : tests) { generalizer.generalize(test); // ParameterizedTestCase put

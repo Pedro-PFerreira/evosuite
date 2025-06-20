@@ -23,9 +23,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.evosuite.runtime.RuntimeSettings;
-import org.evosuite.runtime.mock.java.audio.MockAudioInputStream;
-import org.evosuite.runtime.mock.java.audio.MockClip;
-import org.evosuite.runtime.mock.java.audio.MockControl;
+import org.evosuite.runtime.mock.java.audio.*;
 import org.evosuite.runtime.mock.java.io.MockFile;
 import org.evosuite.runtime.mock.java.io.MockFileInputStream;
 import org.evosuite.runtime.mock.java.io.MockFileOutputStream;
@@ -46,6 +44,7 @@ import org.evosuite.runtime.mock.java.util.*;
 import org.evosuite.runtime.mock.java.util.logging.MockFileHandler;
 import org.evosuite.runtime.mock.java.util.logging.MockLogRecord;
 import org.evosuite.runtime.mock.java.util.prefs.MockPreferences;
+import org.evosuite.runtime.mock.java.xml.*;
 import org.evosuite.runtime.mock.javax.swing.MockDefaultListSelectionModel;
 import org.evosuite.runtime.mock.javax.swing.MockJFileChooser;
 import org.evosuite.runtime.mock.javax.swing.MockJOptionPane;
@@ -98,6 +97,15 @@ public class MockList {
 			list.add(MockAudioInputStream.class);
 			list.add(MockClip.class);
 			list.add(MockControl.class);
+		}
+
+		if (RuntimeSettings.useXML){
+			list.add(MockDocumentBuilder.class);
+			list.add(MockDocumentBuilderFactory.class);
+			list.add(MockDocument.class);
+			list.add(MockElement.class);
+			list.add(MockNode.class);
+			list.add(MockNodeList.class);
 		}
 
 		if (RuntimeSettings.mockJVMNonDeterminism) {

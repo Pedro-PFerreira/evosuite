@@ -1267,6 +1267,8 @@ public class Properties {
     @Parameter(key = "virtual_audio", group = "Sandbox", description = "Usa a virtual audio system for all audio operations")
     public static boolean VIRTUAL_AUDIO = true;
 
+    @Parameter(key = "virtual_xml", group = "Sandbox", description = "Usa a virtual XML parser for all XML operations")
+    public static boolean VIRTUAL_XML = true;
 
     @Parameter(key = "virtual_net", group = "Sandbox", description = "Usa a virtual network for all TCP/UDP communications")
     public static boolean VIRTUAL_NET = true;

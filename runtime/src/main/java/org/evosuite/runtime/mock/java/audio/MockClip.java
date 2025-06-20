@@ -37,9 +37,8 @@ import java.util.List;
  */
 public class MockClip implements Clip, OverrideMock {
 
-
     private final AudioFormat audioFormat;
-    private final MockAudioInputStream mockAudioInputStream;
+    private final AudioInputStream audioInputStream;
     private final List<LineListener> lineListeners = new ArrayList<>();
 
     private boolean open = false;
@@ -50,24 +49,17 @@ public class MockClip implements Clip, OverrideMock {
     private int loopEnd;
 
     public MockClip(){
-        this.mockAudioInputStream = new MockAudioInputStream();
-        this.audioFormat = mockAudioInputStream.getFormat();
-        this.loopStart = 0;
-        this.loopEnd = (int) mockAudioInputStream.getFrameLength();
-    }
-
-    public MockClip(MockAudioInputStream audioInputStream){
-        this.mockAudioInputStream = audioInputStream;
+        this.audioInputStream = new MockAudioInputStream();
         this.audioFormat = audioInputStream.getFormat();
         this.loopStart = 0;
-        this.loopEnd = (int) mockAudioInputStream.getFrameLength();
+        this.loopEnd = (int) audioInputStream.getFrameLength();
     }
 
-    public MockClip(AudioFormat format, byte[] data){
-        this.mockAudioInputStream = new MockAudioInputStream(data, format, data.length / format.getFrameSize());
-        this.audioFormat = format;
+    public MockClip(AudioInputStream audioInputStream){
+        this.audioInputStream = audioInputStream;
+        this.audioFormat = audioInputStream.getFormat();
         this.loopStart = 0;
-        this.loopEnd = (int) mockAudioInputStream.getFrameLength();
+        this.loopEnd = (int) this.audioInputStream.getFrameLength();
     }
 
     @Override
@@ -85,7 +77,14 @@ public class MockClip implements Clip, OverrideMock {
             throw new LineUnavailableException("Clip is already open");
         }
 
-        open(audioInputStream.getFormat(), mockAudioInputStream.getAudioData(),0, mockAudioInputStream.getAudioData().length);
+        if (audioInputStream == null) {
+            throw new NullPointerException("AudioInputStream is null");
+        }
+
+        byte[] data = new byte[(int)audioInputStream.getFrameLength() * audioInputStream.getFormat().getFrameSize()];
+        int bytesRead = audioInputStream.read(data, 0, data.length);
+
+        open(audioInputStream.getFormat(), data,0, bytesRead);
     }
 
     @Override
@@ -93,7 +92,15 @@ public class MockClip implements Clip, OverrideMock {
         if (open) {
             throw new LineUnavailableException("Clip is already open");
         }
-        open(audioFormat, mockAudioInputStream.getAudioData(),0, mockAudioInputStream.getAudioData().length);
+
+        byte[] data = new byte[(int)audioInputStream.getFrameLength() * audioInputStream.getFormat().getFrameSize()];
+        int bytesRead;
+        try {
+            bytesRead = audioInputStream.read(data, 0, data.length);
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
+        open(audioFormat, data,0, bytesRead);
     }
 
     @Override
@@ -149,12 +156,12 @@ public class MockClip implements Clip, OverrideMock {
 
     @Override
     public int getFrameLength() {
-        return (int) (mockAudioInputStream.getFrameLength());
+        return (int) (audioInputStream.getFrameLength());
     }
 
     @Override
     public long getMicrosecondLength() {
-        return (long) (mockAudioInputStream.getFrameLength() / audioFormat.getFrameRate() * 1_000_000);
+        return (long) (audioInputStream.getFrameLength() / audioFormat.getFrameRate() * 1_000_000);
     }
 
     @Override
@@ -205,13 +212,31 @@ public class MockClip implements Clip, OverrideMock {
 
     @Override
     public int getBufferSize() {
-        return mockAudioInputStream.getAudioData().length;
+
+        if (audioInputStream == null || audioInputStream.getFormat() == null || audioInputStream.getFrameLength() == 0) {
+            throw new IllegalStateException("AudioInputStream is null");
+        }
+
+        byte[] data = new byte[(int)audioInputStream.getFrameLength() * audioInputStream.getFormat().getFrameSize()];
+
+        int bytesRead;
+        try {
+            bytesRead = audioInputStream.read(data, 0, data.length);
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
+
+        if (bytesRead == -1) {
+            throw new RuntimeException("Error reading audio data");
+        }
+
+        return bytesRead;
     }
 
     @Override
     public int available() {
         try {
-            return mockAudioInputStream.available();
+            return audioInputStream.available();
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
@@ -234,12 +259,12 @@ public class MockClip implements Clip, OverrideMock {
 
     @Override
     public float getLevel() {
-        return -1.0F;
+        return Instancio.create(float.class);
     }
 
     @Override
     public Line.Info getLineInfo() {
-        return new Line.Info(Clip.class);
+        return new MockLineInfo(this.getClass());
     }
 
     @Override
