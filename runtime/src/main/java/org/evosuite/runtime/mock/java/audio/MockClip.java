@@ -19,9 +19,8 @@
  */
 package org.evosuite.runtime.mock.java.audio;
 
+import org.evosuite.runtime.Randomness;
 import org.evosuite.runtime.mock.OverrideMock;
-import org.instancio.Instancio;
-import org.instancio.settings.Settings;
 
 import javax.sound.sampled.*;
 import java.io.IOException;
@@ -258,7 +257,7 @@ public class MockClip implements Clip, OverrideMock {
 
     @Override
     public float getLevel() {
-        return Instancio.create(float.class);
+        return Randomness.nextFloat();
     }
 
     @Override
@@ -274,12 +273,15 @@ public class MockClip implements Clip, OverrideMock {
     @Override
     public Control[] getControls() {
 
-        Settings settings = Settings.create()
-                .mapType(Control.class, MockControl.class);
+        int size = Randomness.nextInt();
 
-        return Instancio.of(Control[].class)
-                .withSettings(settings)
-                .create();
+        Control[] controls = new MockControl[size];
+
+        for (int i = 0; i < size; i++) {
+            controls[i] = new MockControl();
+        }
+
+        return controls;
     }
 
     @Override

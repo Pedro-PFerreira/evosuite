@@ -21,7 +21,7 @@ public class AudioPlayer {
             clip.open(sound);
 
             System.out.println("Playing audio...");
-            //clip.start(); // Bug here. This should be uncommented to play the audio.
+            clip.start();
 
             // Wait for the audio to finish playing
             clip.drain();

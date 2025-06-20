@@ -30,6 +30,11 @@ import javax.sound.sampled.Mixer;
  */
 public class MockMixerInfo extends Mixer.Info implements OverrideMock {
 
+    public MockMixerInfo() {
+        this("Mock Mixer", "EvoSuite", "Mock Mixer", "1.0");
+    }
+
+
     public MockMixerInfo(String name, String vendor, String description, String version) {
         super(name, vendor, description, version);
     }

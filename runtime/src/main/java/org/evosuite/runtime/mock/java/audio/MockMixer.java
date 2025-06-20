@@ -21,7 +21,6 @@ package org.evosuite.runtime.mock.java.audio;
 
 import org.evosuite.runtime.Randomness;
 import org.evosuite.runtime.mock.StaticReplacementMock;
-import org.instancio.Instancio;
 
 import javax.sound.sampled.*;
 import java.util.ArrayList;
@@ -48,21 +47,33 @@ public class MockMixer implements Mixer, StaticReplacementMock {
 
     @Override
     public Info getMixerInfo() {
-        return Instancio.create(MockMixerInfo.class);
+        return new MockMixerInfo();
     }
 
     @Override
     public Line.Info[] getSourceLineInfo() {
         int size = Randomness.nextInt();
 
-        return Instancio.ofList(MockLineInfo.class).size(size).create().toArray(new MockLineInfo[size]);
+        Line.Info[] lines = new MockLineInfo[size];
+
+        for (int i = 0; i < size; i++) {
+            lines[i] = new MockLineInfo(MockMixer.class);
+        }
+
+        return lines;
     }
 
     @Override
     public Line.Info[] getTargetLineInfo() {
         int size = Randomness.nextInt();
 
-        return Instancio.ofList(MockLineInfo.class).size(size).create().toArray(new MockLineInfo[size]);
+        Line.Info[] lines = new MockLineInfo[size];
+
+        for (int i = 0; i < size; i++) {
+            lines[i] = new MockLineInfo(MockMixer.class);
+        }
+
+        return lines;
     }
 
     @Override
@@ -129,7 +140,7 @@ public class MockMixer implements Mixer, StaticReplacementMock {
         Line.Info lineInfo = this.getLineInfo();
 
         if (lineInfo != null && lineInfo.matches(info)) {
-            return Instancio.create(MockDataLine.class);
+            return new MockDataLine();
         }
 
         return null;
@@ -152,7 +163,7 @@ public class MockMixer implements Mixer, StaticReplacementMock {
         Line[] localLines = new MockDataLine[getSourceLines().length];
 
         for (int i = 0; i < localLines.length; i++) {
-            localLines[i] = Instancio.create(MockDataLine.class);
+            localLines[i] = new MockDataLine();
         }
 
         return localLines;
@@ -163,7 +174,7 @@ public class MockMixer implements Mixer, StaticReplacementMock {
         Line[] localLines = new MockDataLine[getSourceLines().length];
 
         for (int i = 0; i < localLines.length; i++) {
-            localLines[i] = Instancio.create(MockDataLine.class);
+            localLines[i] = new MockDataLine();
         }
 
         return localLines;
@@ -214,7 +225,14 @@ public class MockMixer implements Mixer, StaticReplacementMock {
     public Control[] getControls() {
 
         int size = Randomness.nextInt();
-        return Instancio.ofList(MockControl.class).size(size).create().toArray(new MockControl[size]);
+
+        Control[] controls = new MockControl[size];
+
+        for (int i = 0; i < size; i++) {
+            controls[i] = new MockControl();
+        }
+
+        return controls;
     }
 
     @Override

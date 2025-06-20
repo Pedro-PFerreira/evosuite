@@ -22,7 +22,6 @@ package org.evosuite.runtime.mock.java.audio;
 import org.evosuite.runtime.Randomness;
 import org.evosuite.runtime.mock.MockFramework;
 import org.evosuite.runtime.mock.StaticReplacementMock;
-import org.instancio.Instancio;
 
 import javax.sound.sampled.*;
 import java.io.*;
@@ -48,14 +47,20 @@ public class MockAudioSystem implements StaticReplacementMock {
 
         int size = Randomness.nextInt();
 
-        return Instancio.ofList(MockMixerInfo.class).size(size).create().toArray(new MockMixerInfo[size]);
+        Mixer.Info[] mixerInfo = new Mixer.Info[size];
+
+        for (int i = 0; i < size; i++) {
+            mixerInfo[i] = new MockMixerInfo();
+        }
+
+        return mixerInfo;
     }
 
     public static Mixer getMixer(Mixer.Info info) {
         if (info == null) {
             throw new NullPointerException();
         }
-        return Instancio.of(MockMixer.class).create();
+        return new MockMixer();
     }
 
     public static Line.Info[] getSourceLineInfo(Line.Info info) {
@@ -64,7 +69,19 @@ public class MockAudioSystem implements StaticReplacementMock {
             throw new NullPointerException();
         }
 
-        return Instancio.ofList(MockLineInfo.class).size(1).create().toArray(new MockLineInfo[1]);
+        if (!MockFramework.isEnabled()){
+            return AudioSystem.getSourceLineInfo(info);
+        }
+
+        int size = Randomness.nextInt();
+
+        Line.Info[] lines = new MockLineInfo[size];
+
+        for (int i = 0; i < size; i++) {
+            lines[i] = new MockLineInfo(MockMixer.class);
+        }
+
+        return lines;
     }
 
     public static Line.Info[] getTargetLineInfo(Line.Info info) {
@@ -72,7 +89,20 @@ public class MockAudioSystem implements StaticReplacementMock {
         if (info == null) {
             throw new NullPointerException();
         }
-        return Instancio.ofList(MockLineInfo.class).size(1).create().toArray(new MockLineInfo[1]);
+
+        if (!MockFramework.isEnabled()){
+            return AudioSystem.getSourceLineInfo(info);
+        }
+
+        int size = Randomness.nextInt();
+
+        Line.Info[] lines = new MockLineInfo[size];
+
+        for (int i = 0; i < size; i++) {
+            lines[i] = new MockLineInfo(MockMixer.class);
+        }
+
+        return lines;
     }
 
     public static boolean isLineSupported(Line.Info info) {
@@ -100,21 +130,21 @@ public class MockAudioSystem implements StaticReplacementMock {
 
 
     public static Clip getClip() {
-        return Instancio.create(MockClip.class);
+        return new MockClip();
     }
 
     public Clip getClip(Mixer.Info info){
         if (info == null) {
             throw new NullPointerException();
         }
-        return Instancio.create(MockClip.class);
+        return new MockClip();
     }
 
     public static SourceDataLine getSourceDataLine(AudioFormat format) {
         if (format == null) {
             throw new NullPointerException();
         }
-        return Instancio.create(MockSourceDataLine.class);
+        return new MockSourceDataLine();
     }
 
     public static AudioInputStream getAudioInputStream(File file) throws UnsupportedAudioFileException, IOException {

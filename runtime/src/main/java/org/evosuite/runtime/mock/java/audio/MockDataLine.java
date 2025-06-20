@@ -21,7 +21,6 @@ package org.evosuite.runtime.mock.java.audio;
 
 import org.evosuite.runtime.Randomness;
 import org.evosuite.runtime.mock.StaticReplacementMock;
-import org.instancio.Instancio;
 
 import javax.sound.sampled.*;
 import java.util.ArrayList;
@@ -39,7 +38,7 @@ public class MockDataLine implements DataLine, StaticReplacementMock {
     private boolean isRunning;
     private boolean isActive;
     private byte[] dataBuffer;
-
+    private final List<LineListener> lineListeners = new ArrayList<>();
 
     public MockDataLine(){
 
@@ -57,12 +56,9 @@ public class MockDataLine implements DataLine, StaticReplacementMock {
         }
     }
 
-
-    private final List<LineListener> lineListeners = new ArrayList<>();
-
     @Override
     public Info getLineInfo() {
-        return Instancio.create(Info.class);
+        return new DataLine.Info(MockDataLine.class, new MockAudioDataFormat());
     }
 
     @Override
@@ -88,13 +84,12 @@ public class MockDataLine implements DataLine, StaticReplacementMock {
 
     @Override
     public Control[] getControls() {
-        int size = Randomness.nextInt(1, 10);
-        Control[] controls = new Control[size];
+        int size = Randomness.nextInt();
 
-        Object[] controlsList = Instancio.ofList(MockControl.class).size(size).create().toArray();
+        Control[] controls = new MockControl[size];
 
         for (int i = 0; i < size; i++) {
-            controls[i] = (Control) controlsList[i];
+            controls[i] = new MockControl();
         }
 
         return controls;
@@ -118,7 +113,7 @@ public class MockDataLine implements DataLine, StaticReplacementMock {
         }
 
         if (isControlSupported(type)) {
-            return Instancio.create(MockControl.class);
+            return new MockControl();
         }
 
         return null;
