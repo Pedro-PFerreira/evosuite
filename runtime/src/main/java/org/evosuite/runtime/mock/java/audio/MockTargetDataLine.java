@@ -50,6 +50,7 @@ public class MockTargetDataLine implements TargetDataLine, StaticReplacementMock
      * @param i           the buffer size
      * @throws LineUnavailableException if the line cannot be opened
      */
+    @Override
     public void open(AudioFormat audioFormat, int i) throws LineUnavailableException {
 
         if (audioFormat == null) {
@@ -73,6 +74,7 @@ public class MockTargetDataLine implements TargetDataLine, StaticReplacementMock
      * @param audioFormat the audio format to use
      * @throws LineUnavailableException if the line cannot be opened
      */
+    @Override
     public void open(AudioFormat audioFormat) throws LineUnavailableException {
         if (audioFormat == null) {
             throw new NullPointerException("AudioFormat is null");
@@ -134,6 +136,7 @@ public class MockTargetDataLine implements TargetDataLine, StaticReplacementMock
      * Drains the line, ensuring all data is processed.
      * This method clears the data buffer.
      */
+    @Override
     public void drain() {
         if (this.isOpen() && this.isActive) {
             if (!this.isRunning) {
@@ -148,6 +151,7 @@ public class MockTargetDataLine implements TargetDataLine, StaticReplacementMock
      * Flushes the line, clearing any buffered data.
      * This method is used to discard any data that has not been processed.
      */
+    @Override
     public void flush() {
         if (this.isOpen() && this.isActive) {
             if (!this.isRunning) {
@@ -162,6 +166,7 @@ public class MockTargetDataLine implements TargetDataLine, StaticReplacementMock
      * Starts the line, allowing it to process audio data.
      * This method sets the line to running state and notifies listeners.
      */
+    @Override
     public void start() {
         if (this.isOpen() && this.isActive) {
             this.isRunning = true;
@@ -177,6 +182,7 @@ public class MockTargetDataLine implements TargetDataLine, StaticReplacementMock
      * Stops the line, halting audio processing.
      * This method sets the line to not running state.
      */
+    @Override
     public void stop() {
         if (this.isOpen() && this.isActive) {
             if (!this.isRunning) {
@@ -192,6 +198,7 @@ public class MockTargetDataLine implements TargetDataLine, StaticReplacementMock
      *
      * @return true if the line is running, false otherwise
      */
+    @Override
     public boolean isRunning() {
         return this.isRunning;
     }
@@ -201,6 +208,7 @@ public class MockTargetDataLine implements TargetDataLine, StaticReplacementMock
      *
      * @return true if the line is active, false otherwise
      */
+    @Override
     public boolean isActive() {
         return this.isActive;
     }
@@ -210,6 +218,7 @@ public class MockTargetDataLine implements TargetDataLine, StaticReplacementMock
      *
      * @return the audio format
      */
+    @Override
     public AudioFormat getFormat() {
         return new MockAudioDataFormat();
     }
@@ -219,6 +228,7 @@ public class MockTargetDataLine implements TargetDataLine, StaticReplacementMock
      *
      * @return the size of the data buffer
      */
+    @Override
     public int getBufferSize() {
         return this.dataBuffer.length;
     }
@@ -228,6 +238,7 @@ public class MockTargetDataLine implements TargetDataLine, StaticReplacementMock
      *
      * @return the number of bytes available for reading
      */
+    @Override
     public int available() {
         return 0;
     }
@@ -237,6 +248,7 @@ public class MockTargetDataLine implements TargetDataLine, StaticReplacementMock
      *
      * @return the current frame position
      */
+    @Override
     public int getFramePosition() {
         return 0;
     }
@@ -246,6 +258,7 @@ public class MockTargetDataLine implements TargetDataLine, StaticReplacementMock
      *
      * @return the current long frame position
      */
+    @Override
     public long getLongFramePosition() {
         return 0L;
     }
@@ -255,6 +268,7 @@ public class MockTargetDataLine implements TargetDataLine, StaticReplacementMock
      *
      * @return the current microsecond position
      */
+    @Override
     public long getMicrosecondPosition() {
         return 0L;
     }
@@ -265,6 +279,7 @@ public class MockTargetDataLine implements TargetDataLine, StaticReplacementMock
      *
      * @return the current level of the line
      */
+    @Override
     public float getLevel() {
         return 0.0F;
     }
@@ -274,6 +289,7 @@ public class MockTargetDataLine implements TargetDataLine, StaticReplacementMock
      *
      * @return a Line.Info object representing the line info
      */
+    @Override
     public Line.Info getLineInfo() {
         return new MockLineInfo(SourceDataLine.class);
     }
@@ -284,6 +300,7 @@ public class MockTargetDataLine implements TargetDataLine, StaticReplacementMock
      *
      * @throws LineUnavailableException if the line is already open
      */
+    @Override
     public void open() throws LineUnavailableException {
         if (!this.isOpen() && !this.isActive) {
             this.isOpen = true;
@@ -298,6 +315,7 @@ public class MockTargetDataLine implements TargetDataLine, StaticReplacementMock
      *
      * @throws IllegalStateException if the line is already closed
      */
+    @Override
     public void close() {
 
         if (!this.isOpen() && !this.isActive) {
@@ -313,6 +331,7 @@ public class MockTargetDataLine implements TargetDataLine, StaticReplacementMock
      *
      * @return true if the line is open, false otherwise
      */
+    @Override
     public boolean isOpen() {
         return this.isOpen;
     }
@@ -324,16 +343,21 @@ public class MockTargetDataLine implements TargetDataLine, StaticReplacementMock
      * @return an array of Control objects
      */
     public Control[] getControls() {
+        int maxNumberOfDecimals = Randomness.nextInt(1, 3);
+        int max = Randomness.nextInt(Integer.MAX_VALUE);
+        int min = -max;
 
-        Faker faker = new Faker(new Random(Randomness.getSeed()));
-        int maxNumberOfDecimals = faker.number().numberBetween(1, 3);
-        int min = faker.number().negative();
-        int max = faker.number().positive();
-        int initialValue = faker.number().numberBetween(min, max);
+        int initialValue = Randomness.nextInt(0, max);
+
+        // Randomly decide whether to make the initial value negative
+        if (Randomness.nextBoolean()){
+            initialValue = -initialValue;
+        }
+
         Control[] controls = new Control[2];
         MockFloatControl mockFloatControl = new MockFloatControl(javax.sound.sampled.FloatControl.Type.MASTER_GAIN, (float)min, (float)max, (float)maxNumberOfDecimals, max, (float)initialValue, "dB");
         MockBooleanControl mockBooleanControl = new MockBooleanControl(javax.sound.sampled.BooleanControl.Type.MUTE);
-        mockBooleanControl.setValue(faker.bool().bool());
+        mockBooleanControl.setValue(Randomness.nextBoolean());
         controls[0] = mockFloatControl;
         controls[1] = mockBooleanControl;
         return controls;
@@ -346,6 +370,7 @@ public class MockTargetDataLine implements TargetDataLine, StaticReplacementMock
      * @return true if the control type is supported, false otherwise
      * @throws NullPointerException if the control type is null
      */
+    @Override
     public boolean isControlSupported(Control.Type type) {
         if (type == null) {
             throw new NullPointerException();
@@ -361,6 +386,7 @@ public class MockTargetDataLine implements TargetDataLine, StaticReplacementMock
      * @return the Control object of the specified type, or null if not supported
      * @throws NullPointerException if the control type is null
      */
+    @Override
     public Control getControl(Control.Type type) {
         if (type == null) {
             throw new NullPointerException();
@@ -385,6 +411,7 @@ public class MockTargetDataLine implements TargetDataLine, StaticReplacementMock
      * @param lineListener the LineListener to add
      * @throws NullPointerException if the LineListener is null
      */
+    @Override
     public void addLineListener(LineListener lineListener) {
         if (lineListener == null) {
             throw new NullPointerException("LineListener is null");
@@ -399,6 +426,7 @@ public class MockTargetDataLine implements TargetDataLine, StaticReplacementMock
      * @param lineListener the LineListener to remove
      * @throws NullPointerException if the LineListener is null
      */
+    @Override
     public void removeLineListener(LineListener lineListener) {
         if (lineListener == null) {
             throw new NullPointerException("LineListener is null");
@@ -406,6 +434,7 @@ public class MockTargetDataLine implements TargetDataLine, StaticReplacementMock
             this.lineListeners.remove(lineListener);
         }
     }
+
     @Override
     public String getMockedClassName() {
         return "javax.sound.sampled.TargetDataLine";

@@ -20,6 +20,7 @@
 package org.evosuite.runtime.mock.java.audio;
 
 import net.datafaker.Faker;
+import org.evosuite.runtime.Randomness;
 import org.evosuite.runtime.mock.StaticReplacementMock;
 import org.instancio.Instancio;
 
@@ -71,14 +72,12 @@ public class MockLine implements Line, StaticReplacementMock {
     @Override
     public Control[] getControls() {
 
-        Faker faker = new Faker();
-        int size = faker.number().positive();
-        Control[] controls = new Control[size];
+        int size = Randomness.nextInt(1, Integer.MAX_VALUE);
 
-        Object[] controlsList = Instancio.ofList(MockControl.class).size(size).create().toArray();
+        Control[] controls = new MockControl[size];
 
         for (int i = 0; i < size; i++) {
-            controls[i] = (Control) controlsList[i];
+            controls[i] = new MockControl();
         }
 
         return controls;

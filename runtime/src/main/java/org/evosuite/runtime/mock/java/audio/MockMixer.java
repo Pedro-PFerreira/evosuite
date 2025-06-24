@@ -19,6 +19,7 @@
  */
 package org.evosuite.runtime.mock.java.audio;
 
+import net.datafaker.Faker;
 import org.evosuite.runtime.Randomness;
 import org.evosuite.runtime.mock.StaticReplacementMock;
 
@@ -224,7 +225,7 @@ public class MockMixer implements Mixer, StaticReplacementMock {
     @Override
     public Control[] getControls() {
 
-        int size = Randomness.nextInt();
+        int size = Randomness.nextInt(1, 10);
 
         Control[] controls = new MockControl[size];
 

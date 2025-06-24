@@ -64,7 +64,7 @@ public class MockDataLine implements DataLine, StaticReplacementMock {
 
     @Override
     public Info getLineInfo() {
-        return new DataLine.Info(MockInfo.class, new MockAudioDataFormat());
+        return new MockInfo(MockDataLine.class, new MockAudioDataFormat());
     }
 
     @Override
@@ -90,7 +90,8 @@ public class MockDataLine implements DataLine, StaticReplacementMock {
 
     @Override
     public Control[] getControls() {
-        int size = Randomness.nextInt();
+
+        int size = Randomness.nextInt(1, Integer.MAX_VALUE);
 
         Control[] controls = new MockControl[size];
 

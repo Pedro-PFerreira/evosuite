@@ -287,7 +287,7 @@ public class MockClip implements Clip, OverrideMock {
     @Override
     public Control[] getControls() {
 
-        int size = Randomness.nextInt();
+        int size = Randomness.nextInt(1, Integer.MAX_VALUE);
 
         Control[] controls = new MockControl[size];
 

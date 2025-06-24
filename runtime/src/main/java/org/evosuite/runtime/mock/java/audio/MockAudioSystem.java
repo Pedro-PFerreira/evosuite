@@ -35,6 +35,8 @@ import java.net.URL;
  */
 public class MockAudioSystem implements StaticReplacementMock {
 
+    private static final MockClip mockClipInstance = new MockClip();
+
     static {
         String seed = System.getenv("SEED_FOR_MOCKS");
 
@@ -42,8 +44,6 @@ public class MockAudioSystem implements StaticReplacementMock {
             Randomness.setSeed(Long.parseLong(seed));
         }
     }
-
-    private static final MockClip mockClipInstance = new MockClip();
 
     /**
      * Returns an array of Mixer.Info objects representing the available mixers.
@@ -144,15 +144,16 @@ public class MockAudioSystem implements StaticReplacementMock {
         if (info == null) {
             throw new NullPointerException();
         }
-
         if (info.getLineClass().equals(SourceDataLine.class))
             return new MockSourceDataLine();
         else if (info.getLineClass().equals(TargetDataLine.class))
             return new MockTargetDataLine();
         else if (info.getLineClass().equals(Clip.class))
             return mockClipInstance;
-        else
+        else if (info.getLineClass().equals(MockLine.class))
             return new MockDataLine();
+        else
+            throw new LineUnavailableException();
     }
 
 
