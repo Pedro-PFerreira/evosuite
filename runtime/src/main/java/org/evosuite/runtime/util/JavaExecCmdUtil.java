@@ -50,10 +50,10 @@ public class JavaExecCmdUtil {
 
         return getJavaHomeEnv()
                 .map(javaHomeEnvVar ->
-                        Paths.get(javaHomeEnvVar, "bin", "java", getOsName()
-                                .filter(osName -> osName.toLowerCase().contains("windows"))
-                                .map(osName -> ".exe")
-                                .orElse("")).toFile()
+                     Paths.get(javaHomeEnvVar, "bin", "java", getOsName()
+                               .filter(osName -> osName.toLowerCase().contains("windows"))
+                               .map(osName -> ".exe")
+                               .orElse("")).toFile()
                 )
                 .filter(File::exists)
                 .map(File::getPath)
