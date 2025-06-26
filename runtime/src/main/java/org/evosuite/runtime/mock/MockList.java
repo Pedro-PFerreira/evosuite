@@ -249,6 +249,7 @@ public class MockList {
 			throw new IllegalArgumentException("Empty className");
 		}
 
+
 		for (Class<? extends EvoSuiteMock> mock : getList()) {
 			String name = null;
 
