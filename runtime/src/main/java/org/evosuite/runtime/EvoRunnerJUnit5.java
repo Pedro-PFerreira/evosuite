@@ -61,7 +61,6 @@ public class EvoRunnerJUnit5 implements TestInstanceFactory {
         RuntimeSettings.mockGUI = ep.mockGUI();
         RuntimeSettings.useVFS = ep.useVFS();
         RuntimeSettings.useAudio = ep.useAudio();
-        RuntimeSettings.useXML = ep.useXML();
         RuntimeSettings.useVNET = ep.useVNET();
         RuntimeSettings.useSeparateClassLoader = ep.separateClassLoader();
         RuntimeSettings.useJEE = ep.useJEE();

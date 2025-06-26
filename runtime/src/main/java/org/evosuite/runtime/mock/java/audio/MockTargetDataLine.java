@@ -1,13 +1,11 @@
 package org.evosuite.runtime.mock.java.audio;
 
-import net.datafaker.Faker;
 import org.evosuite.runtime.Randomness;
 import org.evosuite.runtime.mock.StaticReplacementMock;
 
 import javax.sound.sampled.*;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Random;
 
 import static org.evosuite.runtime.mock.java.audio.MockAudioUtils.generateRandomContent;
 

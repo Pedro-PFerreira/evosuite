@@ -578,10 +578,6 @@ public class TestSuiteWriter implements Opcodes {
             list.add("useAudio = true");
         }
 
-        if (Properties.VIRTUAL_XML){
-            list.add("useXML = true");
-        }
-
         if (Properties.VIRTUAL_NET) {
             list.add("useVNET = true");
         }

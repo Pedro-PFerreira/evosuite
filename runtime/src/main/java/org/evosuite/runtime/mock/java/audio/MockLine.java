@@ -19,10 +19,8 @@
  */
 package org.evosuite.runtime.mock.java.audio;
 
-import net.datafaker.Faker;
 import org.evosuite.runtime.Randomness;
 import org.evosuite.runtime.mock.StaticReplacementMock;
-import org.instancio.Instancio;
 
 import javax.sound.sampled.Control;
 import javax.sound.sampled.Line;
@@ -45,7 +43,7 @@ public class MockLine implements Line, StaticReplacementMock {
 
     @Override
     public Info getLineInfo() {
-        return Instancio.create(Info.class);
+        return new Info(Line.class);
     }
 
     @Override
@@ -95,13 +93,20 @@ public class MockLine implements Line, StaticReplacementMock {
 
     @Override
     public Control getControl(Control.Type type) {
-
         if (type == null) {
             throw new NullPointerException();
         }
 
         if (isControlSupported(type)) {
-            return Instancio.create(MockControl.class);
+
+            Control[] controls = this.getControls();
+
+            for (Control control : controls){
+
+                if (control.getType().equals(type)){
+                    return control;
+                }
+            }
         }
 
         return null;

@@ -20,13 +20,12 @@
 package org.evosuite;
 
 import com.examples.with.different.packagename.AudioPlayer;
-import com.examples.with.different.packagename.MP3;
 import org.evosuite.ga.metaheuristics.GeneticAlgorithm;
 import org.evosuite.testsuite.TestSuiteChromosome;
 import org.junit.Test;
 
 /**
- * @author Pedro Ferreira
+ * @author Pedro-PFrreira
  */
 public class MP3SystemTest extends SystemTestBase {
 
@@ -35,7 +34,7 @@ public class MP3SystemTest extends SystemTestBase {
 
         EvoSuite evoSuite = new EvoSuite();
 
-        String targetClass = MP3.class.getCanonicalName();
+        String targetClass = AudioPlayer.class.getCanonicalName();
 
         Properties.TARGET_CLASS = targetClass;
 

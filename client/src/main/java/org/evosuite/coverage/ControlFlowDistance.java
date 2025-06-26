@@ -140,8 +140,6 @@ public class ControlFlowDistance implements Comparable<ControlFlowDistance> {
      */
     public double getResultingBranchFitness() {
 
-        //System.out.println("Approach level: " + approachLevel + ", branch distance: " + FitnessFunction.normalize(branchDistance));
-
         return approachLevel + FitnessFunction.normalize(branchDistance);
     }
 

@@ -113,6 +113,7 @@ public class TestGenerationResultBuilder {
     }
 
     private <T extends Chromosome<T>> void fillInformationFromTestData(TestGenerationResultImpl<T> result) {
+
         Set<MutationInfo> exceptionMutants = new LinkedHashSet<>();
         for (Mutation m : MutationPool.getInstance(TestGenerationContext.getInstance().getClassLoaderForSUT()).getMutants()) {
             if (MutationTimeoutStoppingCondition.isDisabled(m)) {

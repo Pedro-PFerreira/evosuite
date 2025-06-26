@@ -19,7 +19,6 @@
  */
 package org.evosuite.runtime.mock.java.audio;
 
-import net.datafaker.Faker;
 import org.evosuite.runtime.Randomness;
 import org.evosuite.runtime.mock.StaticReplacementMock;
 

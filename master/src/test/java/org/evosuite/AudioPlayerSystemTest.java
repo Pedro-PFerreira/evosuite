@@ -25,7 +25,7 @@ import org.evosuite.testsuite.TestSuiteChromosome;
 import org.junit.Test;
 
 /**
- * @author Pedro Ferreira
+ * @author Pedro-PFerreira
  */
 public class AudioPlayerSystemTest extends SystemTestBase {
 
