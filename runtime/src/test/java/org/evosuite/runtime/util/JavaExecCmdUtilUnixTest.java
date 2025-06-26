@@ -101,7 +101,7 @@ public class JavaExecCmdUtilUnixTest {
                             // set correct java_home and get real path to java
                             environmentVariables.set("JAVA_HOME", JAVA_HOME_SYSTEM);
                             assertThat(JavaExecCmdUtil.getJavaBinExecutablePath(),
-                                IsEqual.equalTo(Paths.get(JAVA_HOME_SYSTEM, "bin", "java").toString()));
+                                    IsEqual.equalTo(Paths.get(JAVA_HOME_SYSTEM, "bin", "java").toString()));
                         }
                 );
     }
