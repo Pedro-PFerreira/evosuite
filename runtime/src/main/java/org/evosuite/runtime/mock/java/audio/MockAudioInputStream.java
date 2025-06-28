@@ -121,7 +121,11 @@ public class MockAudioInputStream extends AudioInputStream implements OverrideMo
 
     @Override
     public void close() throws IOException {
-        super.close();
+
+        if (!MockFramework.isEnabled()) {
+            super.close();
+            return;
+        }
         audioData = null;
         position = 0;
         markPosition = 0;
@@ -130,13 +134,22 @@ public class MockAudioInputStream extends AudioInputStream implements OverrideMo
     @Override
     public void mark(int readLimit) {
 
-        super.mark(readLimit);
+        if (!MockFramework.isEnabled()) {
+            super.mark(readLimit);
+            return;
+        }
+        if (readLimit < 0) {
+            throw new IllegalArgumentException("Read limit must be non-negative");
+        }
         markPosition = position;
     }
 
     @Override
     public void reset() throws IOException {
-        super.reset();
+        if (!MockFramework.isEnabled()) {
+            super.reset();
+            return;
+        }
         position = markPosition;
     }
 
