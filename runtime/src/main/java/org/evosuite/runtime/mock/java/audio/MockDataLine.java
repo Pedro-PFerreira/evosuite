@@ -64,7 +64,7 @@ public class MockDataLine implements DataLine, StaticReplacementMock {
 
     @Override
     public Info getLineInfo() {
-        return new MockInfo(MockDataLine.class, new MockAudioDataFormat());
+        return new MockInfo(MockDataLine.class, new MockAudioFormat());
     }
 
     @Override
@@ -203,7 +203,7 @@ public class MockDataLine implements DataLine, StaticReplacementMock {
 
     @Override
     public AudioFormat getFormat() {
-        return new MockAudioDataFormat();
+        return new MockAudioFormat();
     }
 
     @Override
@@ -257,12 +257,12 @@ public class MockDataLine implements DataLine, StaticReplacementMock {
 
         @Override
         public boolean isFormatSupported(AudioFormat format) {
-            return format instanceof MockAudioDataFormat;
+            return format instanceof MockAudioFormat;
         }
 
         @Override
         public AudioFormat[] getFormats(){
-            return new AudioFormat[] { new MockAudioDataFormat() };
+            return new AudioFormat[] { new MockAudioFormat() };
         }
 
         @Override

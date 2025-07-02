@@ -230,7 +230,7 @@ public class MockSourceDataLine implements SourceDataLine, StaticReplacementMock
      */
     @Override
     public AudioFormat getFormat() {
-        return new MockAudioDataFormat();
+        return new MockAudioFormat();
     }
 
     /**

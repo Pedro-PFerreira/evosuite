@@ -23,7 +23,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.evosuite.runtime.RuntimeSettings;
-import org.evosuite.runtime.mock.java.audio.MockAudioDataFormat;
+import org.evosuite.runtime.mock.java.audio.MockAudioFormat;
 import org.evosuite.runtime.mock.java.audio.MockAudioInputStream;
 import org.evosuite.runtime.mock.java.audio.MockAudioSystem;
 import org.evosuite.runtime.mock.java.audio.MockBooleanControl;
@@ -105,7 +105,7 @@ public class MockList {
 		}
 
 		if (RuntimeSettings.useAudio){
-			list.add(MockAudioDataFormat.class);
+			list.add(MockAudioFormat.class);
 			list.add(MockAudioInputStream.class);
 			list.add(MockAudioSystem.class);
 			list.add(MockBooleanControl.class);

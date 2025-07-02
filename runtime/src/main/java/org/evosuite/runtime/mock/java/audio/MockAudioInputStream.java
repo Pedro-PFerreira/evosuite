@@ -50,7 +50,7 @@ public class MockAudioInputStream extends AudioInputStream implements OverrideMo
      */
     public MockAudioInputStream() {
         super(generateInputStream(generateSampleRate(), generateChannels()),
-                new MockAudioDataFormat(),
+                new MockAudioFormat(),
                 0);
 
         this.sampleRate = generateSampleRate();
@@ -76,7 +76,7 @@ public class MockAudioInputStream extends AudioInputStream implements OverrideMo
 
     @Override
     public AudioFormat getFormat(){
-        return new MockAudioDataFormat();
+        return new MockAudioFormat();
     }
 
     @Override
